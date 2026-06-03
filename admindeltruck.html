@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Trucking Reports</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+
+:root{
+    --bg:#020617;
+    --panel:rgba(15,23,42,0.82);
+    --panel2:rgba(30,41,59,0.85);
+
+    --border:rgba(255,255,255,0.08);
+
+    --primary:#22c55e;
+    --primary2:#16a34a;
+
+    --blue:#3b82f6;
+    --red:#ef4444;
+
+    --text:#f8fafc;
+    --muted:#94a3b8;
+
+    --shadow:0 20px 45px rgba(0,0,0,0.45);
+    --radius:22px;
+}
+
+*{
+    box-sizing:border-box;
+    font-family:Segoe UI, Arial, sans-serif;
+}
+
+body{
+    margin:0;
+    color:var(--text);
+
+    background:
+    radial-gradient(circle at top left, rgba(34,197,94,0.12), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(59,130,246,0.12), transparent 35%),
+    linear-gradient(135deg,#020617,#071226,#0f172a);
+
+    min-height:100vh;
+}
+
+/* HEADER */
+.header{
+    position:sticky;
+    top:0;
+    z-index:100;
+
+    background:rgba(2,6,23,0.85);
+    backdrop-filter:blur(16px);
+
+    border-bottom:1px solid var(--border);
+
+    padding:22px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:15px;
+}
+
+.header-left{
+    display:flex;
+    align-items:center;
+    gap:16px;
+}
+
+.logo{
+    width:60px;
+    height:60px;
+
+    border-radius:18px;
+
+    background:linear-gradient(135deg,var(--primary),var(--blue));
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:30px;
+
+    box-shadow:0 12px 30px rgba(34,197,94,0.35);
+}
+
+.header h1{
+    margin:0;
+    font-size:24px;
+}
+
+.header small{
+    color:var(--muted);
+}
+
+/* CONTAINER */
+.container{
+    max-width:1350px;
+    margin:auto;
+    padding:24px;
+}
+
+/* KPI */
+.kpis{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:18px;
+    margin-bottom:24px;
+}
+
+.kpi{
+    background:var(--panel);
+
+    border:1px solid var(--border);
+
+    border-radius:var(--radius);
+
+    padding:22px;
+
+    backdrop-filter:blur(14px);
+
+    box-shadow:var(--shadow);
+}
+
+.kpi small{
+    color:var(--muted);
+}
+
+.kpi h2{
+    margin:10px 0 0;
+    font-size:34px;
+}
+
+/* TOP PANEL */
+.top-panel{
+    background:var(--panel);
+
+    border:1px solid var(--border);
+
+    border-radius:var(--radius);
+
+    padding:20px;
+
+    backdrop-filter:blur(14px);
+
+    box-shadow:var(--shadow);
+
+    margin-bottom:24px;
+}
+
+.controls{
+    display:grid;
+    grid-template-columns:1fr auto auto;
+    gap:12px;
+}
+
+input{
+    width:100%;
+    padding:14px;
+
+    border-radius:14px;
+
+    border:1px solid rgba(255,255,255,0.08);
+
+    background:rgba(255,255,255,0.05);
+
+    color:var(--text);
+
+    outline:none;
+}
+
+input::placeholder{
+    color:#94a3b8;
+}
+
+button{
+    border:none;
+    border-radius:14px;
+
+    padding:14px 18px;
+
+    color:white;
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:0.25s;
+}
+
+button:hover{
+    transform:translateY(-2px);
+}
+
+.export-btn{
+    background:linear-gradient(135deg,var(--blue),#2563eb);
+}
+
+.delete-btn{
+    background:linear-gradient(135deg,var(--red),#dc2626);
+}
+
+/* REPORT GRID */
+#reports{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(350px,1fr));
+    gap:18px;
+}
+
+/* CARD */
+.card{
+    background:var(--panel2);
+
+    border:1px solid var(--border);
+
+    border-radius:26px;
+
+    padding:20px;
+
+    backdrop-filter:blur(14px);
+
+    box-shadow:var(--shadow);
+
+    transition:0.25s;
+}
+
+.card:hover{
+    transform:translateY(-4px);
+}
+
+.card-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+}
+
+.truck{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.truck-icon{
+    width:56px;
+    height:56px;
+
+    border-radius:18px;
+
+    background:linear-gradient(135deg,var(--primary),var(--primary2));
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:28px;
+}
+
+.status{
+    padding:6px 12px;
+
+    border-radius:999px;
+
+    background:rgba(34,197,94,0.18);
+
+    color:#86efac;
+
+    font-size:12px;
+    font-weight:700;
+}
+
+/* META */
+.meta{
+    margin-top:18px;
+
+    line-height:1.9;
+
+    color:var(--muted);
+
+    font-size:14px;
+}
+
+/* HISTORY */
+details{
+    margin-top:18px;
+
+    background:rgba(255,255,255,0.04);
+
+    border:1px solid rgba(255,255,255,0.06);
+
+    border-radius:18px;
+
+    padding:14px;
+}
+
+summary{
+    cursor:pointer;
+    font-weight:700;
+    color:white;
+}
+
+.history{
+    margin-top:14px;
+
+    background:rgba(255,255,255,0.04);
+
+    border-radius:14px;
+
+    padding:12px;
+
+    line-height:1.8;
+
+    color:#cbd5e1;
+}
+
+pre{
+    white-space:pre-wrap;
+    word-break:break-word;
+
+    background:#020617;
+
+    color:#93c5fd;
+
+    padding:12px;
+
+    border-radius:14px;
+
+    overflow:auto;
+
+    font-size:12px;
+}
+
+/* EMPTY */
+.empty{
+    background:var(--panel);
+
+    border:1px solid var(--border);
+
+    border-radius:24px;
+
+    padding:40px;
+
+    text-align:center;
+
+    color:var(--muted);
+
+    grid-column:1/-1;
+}
+
+/* MODAL */
+.popup{
+    position:fixed;
+    inset:0;
+
+    background:rgba(0,0,0,0.7);
+
+    display:none;
+
+    align-items:center;
+    justify-content:center;
+
+    z-index:999;
+}
+
+.popup-box{
+    width:95%;
+    max-width:400px;
+
+    background:#0f172a;
+
+    border-radius:26px;
+
+    border:1px solid var(--border);
+
+    padding:24px;
+
+    box-shadow:var(--shadow);
+}
+
+.popup-box h3{
+    margin-top:0;
+}
+
+.popup-actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+
+    margin-top:14px;
+}
+
+/* MOBILE */
+@media(max-width:850px){
+
+    .controls{
+        grid-template-columns:1fr;
+    }
+
+    #reports{
+        grid-template-columns:1fr;
+    }
+
+    .header{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+
+    <div class="header-left">
+
+        <div class="logo">🚚</div>
+
+        <div>
+            <h1>DDELIVERY TRUCK REPORTS</h1>
+            <small>Delivery Monitoring & Logistics Analytics</small>
+        </div>
+
+    </div>
+
+</div>
+
+<div class="container">
+
+    <!-- KPI -->
+    <div class="kpis">
+
+        <div class="kpi">
+            <small>Total Reports</small>
+            <h2 id="totalReports">0</h2>
+        </div>
+
+        <div class="kpi">
+            <small>Delivered Reports</small>
+            <h2 id="deliveredReports">0</h2>
+        </div>
+
+        <div class="kpi">
+            <small>Delayed Reports</small>
+            <h2 id="delayedReports">0</h2>
+        </div>
+
+    </div>
+
+    <!-- CONTROLS -->
+    <div class="top-panel">
+
+        <div class="controls">
+
+            <input id="search"
+            placeholder="🔍 Search truck / driver / destination..."
+            oninput="load()">
+
+            <button class="export-btn"
+            onclick="exportExcel()">
+
+                📤 Export
+
+            </button>
+
+            <button class="delete-btn"
+            onclick="openClearPopup()">
+
+                🗑 Clear
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- REPORTS -->
+    <div id="reports"></div>
+
+</div>
+
+<!-- POPUP -->
+<div class="popup" id="popup">
+
+    <div class="popup-box">
+
+        <h3>🔐 Admin Verification</h3>
+
+        <input type="password"
+        id="adminPass"
+        placeholder="Enter admin password">
+
+        <div class="popup-actions">
+
+            <button class="delete-btn"
+            onclick="confirmClear()">
+
+                Confirm
+
+            </button>
+
+            <button style="background:#475569"
+            onclick="closePopup()">
+
+                Cancel
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+const ADMIN_PASSWORD = "1234";
+
+function getData(){
+    return JSON.parse(
+        localStorage.getItem("adminTruckReports")
+    ) || [];
+}
+
+/* LOAD */
+function load(){
+
+    let data=getData();
+
+    data.sort((a,b)=>
+    new Date(b.sentAt)-new Date(a.sentAt));
+
+    /* KPI */
+    document.getElementById("totalReports")
+    .innerText=data.length;
+
+    document.getElementById("deliveredReports")
+    .innerText=
+    data.filter(x=>
+    (x.record?.status||"")
+    ==="Delivered").length;
+
+    document.getElementById("delayedReports")
+    .innerText=
+    data.filter(x=>
+    (x.record?.status||"")
+    ==="Delayed").length;
+
+    let keyword=document
+    .getElementById("search")
+    .value.toLowerCase();
+
+    data=data.filter(r=>{
+
+        let x=r.record || {};
+
+        return (
+            (x.truck||"")
+            .toLowerCase()
+            .includes(keyword)
+
+            ||
+
+            (x.driver||"")
+            .toLowerCase()
+            .includes(keyword)
+
+            ||
+
+            (x.destination||"")
+            .toLowerCase()
+            .includes(keyword)
+
+            ||
+
+            (x.inspector||"")
+            .toLowerCase()
+            .includes(keyword)
+
+            ||
+
+            (x.checker||"")
+            .toLowerCase()
+            .includes(keyword)
+        );
+    });
+
+    if(data.length===0){
+
+        reports.innerHTML=`
+        <div class="empty">
+            No truck reports found
+        </div>`;
+
+        return;
+    }
+
+    let html="";
+
+    data.forEach(r=>{
+
+        let x=r.record || {};
+
+        let history=(x.history||[])
+        .map(h=>`
+        ➜ ${h.status}
+        | ${h.temp}°C
+        | ${new Date(h.time)
+        .toLocaleString()}
+        `)
+        .join("<br>");
+
+        html+=`
+
+        <div class="card">
+
+            <div class="card-top">
+
+                <div class="truck">
+
+                    <div class="truck-icon">
+                        🚚
+                    </div>
+
+                    <div>
+
+                        <h3 style="margin:0;">
+                            ${x.truck || "-"}
+                        </h3>
+
+                        <small style="color:#94a3b8">
+                            ${x.destination || "-"}
+                        </small>
+
+                    </div>
+
+                </div>
+
+                <div class="status">
+                    ${x.status || "-"}
+                </div>
+
+            </div>
+
+            <div class="meta">
+
+                👨‍✈ Driver:
+                ${x.driver || "-"}<br>
+
+                📦 Checker:
+                ${x.checker || "-"}<br>
+
+                🌡 Temperature:
+                ${x.temp || "-"} °C<br>
+
+                🧪 Inspector:
+                ${x.inspector || "-"}<br>
+
+                📤 Sent By:
+                ${r.sentBy || "-"}<br>
+
+                🕒 Sent At:
+                ${
+                    r.sentAt
+                    ? new Date(r.sentAt)
+                    .toLocaleString()
+                    : "-"
+                }
+
+            </div>
+
+            <details>
+
+                <summary>
+                    📄 View Full History
+                </summary>
+
+                <div class="history">
+
+                    <b>Transfer History</b>
+                    <br><br>
+
+                    ${history || "No history"}
+
+                    <br><br>
+
+                    <b>Raw JSON Data</b>
+
+                    <pre>
+${JSON.stringify(r,null,2)}
+                    </pre>
+
+                </div>
+
+            </details>
+
+        </div>
+        `;
+    });
+
+    reports.innerHTML=html;
+}
+
+/* EXPORT */
+function exportExcel(){
+
+    let data=getData();
+
+    if(data.length===0){
+        alert("No data to export");
+        return;
+    }
+
+    let rows=`
+    <table border="1">
+
+    <tr>
+        <th>Truck</th>
+        <th>Driver</th>
+        <th>Checker</th>
+        <th>Destination</th>
+        <th>Status</th>
+        <th>Temperature</th>
+        <th>Inspector</th>
+        <th>Sent By</th>
+        <th>Sent At</th>
+        <th>History</th>
+    </tr>`;
+
+    data.forEach(r=>{
+
+        let x=r.record || {};
+
+        let history=(x.history || [])
+        .map(h=>
+        `${h.status} | ${h.temp}°C | ${h.time}`)
+        .join(" || ");
+
+        rows+=`
+        <tr>
+
+            <td>${x.truck || ""}</td>
+            <td>${x.driver || ""}</td>
+            <td>${x.checker || ""}</td>
+            <td>${x.destination || ""}</td>
+            <td>${x.status || ""}</td>
+            <td>${x.temp || ""}</td>
+            <td>${x.inspector || ""}</td>
+            <td>${r.sentBy || ""}</td>
+            <td>
+                ${
+                    r.sentAt
+                    ? new Date(r.sentAt)
+                    .toLocaleString()
+                    : ""
+                }
+            </td>
+            <td>${history}</td>
+
+        </tr>`;
+    });
+
+    rows+="</table>";
+
+    let blob=new Blob([rows],{
+        type:"application/vnd.ms-excel"
+    });
+
+    let a=document.createElement("a");
+
+    a.href=URL.createObjectURL(blob);
+
+    a.download="ALL_TRUCK_REPORTS.xls";
+
+    a.click();
+}
+
+/* POPUP */
+function openClearPopup(){
+    document.getElementById("popup")
+    .style.display="flex";
+}
+
+function closePopup(){
+
+    document.getElementById("popup")
+    .style.display="none";
+
+    document.getElementById("adminPass")
+    .value="";
+}
+
+/* CLEAR */
+function confirmClear(){
+
+    let pass=document
+    .getElementById("adminPass")
+    .value;
+
+    if(pass!==ADMIN_PASSWORD){
+
+        alert("❌ Wrong password!");
+
+        return;
+    }
+
+    if(confirm("Delete ALL truck reports?")){
+
+        localStorage.removeItem(
+            "adminTruckReports"
+        );
+
+        alert("✅ All reports cleared!");
+
+        closePopup();
+
+        load();
+    }
+}
+
+window.onload=load;
+
+</script>
+
+</body>
+</html>

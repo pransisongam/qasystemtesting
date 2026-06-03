@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>QA Cake Staging System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+
+:root{
+    --bg:#020617;
+    --panel:rgba(15,23,42,0.85);
+    --panel2:rgba(30,41,59,0.72);
+
+    --border:rgba(255,255,255,0.08);
+
+    --green:#22c55e;
+    --blue:#3b82f6;
+    --orange:#f59e0b;
+    --red:#ef4444;
+    --purple:#8b5cf6;
+
+    --text:#f8fafc;
+    --muted:#94a3b8;
+
+    --shadow:0 25px 50px rgba(0,0,0,0.4);
+}
+
+*{
+    box-sizing:border-box;
+    font-family:Segoe UI, Arial, sans-serif;
+}
+
+body{
+    margin:0;
+    background:
+    radial-gradient(circle at top left, rgba(34,197,94,0.15), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(59,130,246,0.15), transparent 35%),
+    linear-gradient(135deg,#020617,#071226,#0f172a);
+
+    color:var(--text);
+}
+
+/* FLOAT BG */
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:
+    radial-gradient(circle at 20% 20%, rgba(34,197,94,0.12), transparent 30%),
+    radial-gradient(circle at 80% 30%, rgba(59,130,246,0.12), transparent 35%),
+    radial-gradient(circle at 50% 90%, rgba(168,85,247,0.1), transparent 35%);
+    animation:floatBg 10s ease-in-out infinite alternate;
+    z-index:-1;
+}
+
+@keyframes floatBg{
+    from{
+        transform:translateY(-10px);
+    }
+    to{
+        transform:translateY(10px);
+    }
+}
+
+/* HEADER */
+.header{
+    position:sticky;
+    top:0;
+    z-index:100;
+
+    backdrop-filter:blur(18px);
+
+    background:rgba(2,6,23,0.75);
+
+    border-bottom:1px solid var(--border);
+
+    padding:20px 30px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    box-shadow:var(--shadow);
+}
+
+.header h1{
+    margin:0;
+    font-size:24px;
+    letter-spacing:1px;
+}
+
+.header span{
+    color:var(--muted);
+    font-size:13px;
+}
+
+/* LAYOUT */
+.wrapper{
+    max-width:1500px;
+    margin:auto;
+    padding:25px;
+
+    display:grid;
+    grid-template-columns:320px 1fr;
+    gap:22px;
+}
+
+/* PANEL */
+.panel{
+    background:var(--panel);
+    border:1px solid var(--border);
+
+    border-radius:24px;
+
+    padding:20px;
+
+    backdrop-filter:blur(16px);
+
+    box-shadow:var(--shadow);
+}
+
+/* SEARCH */
+.search{
+    width:100%;
+    padding:14px;
+
+    border:none;
+    outline:none;
+
+    border-radius:16px;
+
+    background:rgba(255,255,255,0.06);
+
+    color:var(--text);
+
+    margin-bottom:18px;
+}
+
+.search::placeholder{
+    color:var(--muted);
+}
+
+/* KPI */
+.kpis{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:14px;
+
+    margin-bottom:20px;
+}
+
+.kpi{
+    background:var(--panel2);
+    border:1px solid var(--border);
+
+    border-radius:20px;
+
+    padding:18px;
+    text-align:center;
+}
+
+.kpi h2{
+    margin:0;
+    font-size:26px;
+}
+
+.kpi small{
+    color:var(--muted);
+}
+
+/* LIVE FEED */
+.live-box{
+    background:var(--panel2);
+    border:1px solid var(--border);
+
+    border-radius:20px;
+
+    padding:18px;
+
+    max-height:350px;
+    overflow:auto;
+}
+
+.live-title{
+    color:#f87171;
+    font-weight:700;
+    margin-bottom:14px;
+}
+
+.live-item{
+    background:rgba(255,255,255,0.04);
+
+    border:1px solid rgba(255,255,255,0.06);
+
+    border-radius:16px;
+
+    padding:12px;
+
+    margin-bottom:12px;
+
+    font-size:13px;
+
+    line-height:1.7;
+}
+
+/* BUTTONS */
+.actions{
+    display:flex;
+    gap:10px;
+    margin-bottom:18px;
+}
+
+button{
+    border:none;
+    cursor:pointer;
+
+    padding:13px 18px;
+
+    border-radius:14px;
+
+    font-weight:700;
+
+    color:white;
+
+    transition:0.25s;
+}
+
+button:hover{
+    transform:translateY(-2px);
+}
+
+.export{
+    background:linear-gradient(135deg,var(--blue),#2563eb);
+}
+
+.clear{
+    background:linear-gradient(135deg,var(--red),#dc2626);
+}
+
+/* RECORDS */
+.records{
+    display:grid;
+    gap:16px;
+}
+
+.card{
+    background:var(--panel);
+
+    border:1px solid var(--border);
+
+    border-radius:24px;
+
+    padding:22px;
+
+    backdrop-filter:blur(14px);
+
+    transition:0.3s;
+
+    position:relative;
+
+    overflow:hidden;
+}
+
+.card:hover{
+    transform:translateY(-3px);
+}
+
+.card::before{
+    content:"";
+    position:absolute;
+
+    width:250px;
+    height:250px;
+
+    border-radius:50%;
+
+    background:rgba(255,255,255,0.03);
+
+    top:-120px;
+    right:-100px;
+}
+
+/* STATUS */
+.status{
+    display:inline-block;
+
+    padding:6px 12px;
+
+    border-radius:999px;
+
+    font-size:12px;
+    font-weight:700;
+
+    margin-left:10px;
+}
+
+.ok{
+    background:rgba(34,197,94,0.15);
+    color:#86efac;
+    border:1px solid rgba(34,197,94,0.3);
+}
+
+.warning{
+    background:rgba(245,158,11,0.15);
+    color:#fde68a;
+    border:1px solid rgba(245,158,11,0.3);
+}
+
+.danger{
+    background:rgba(239,68,68,0.15);
+    color:#fca5a5;
+    border:1px solid rgba(239,68,68,0.3);
+}
+
+.meta{
+    margin-top:14px;
+    line-height:1.8;
+    color:var(--muted);
+    font-size:14px;
+}
+
+/* HISTORY */
+.history{
+    margin-top:18px;
+
+    background:rgba(255,255,255,0.04);
+
+    border:1px solid rgba(255,255,255,0.06);
+
+    border-radius:18px;
+
+    padding:14px;
+}
+
+.history-title{
+    margin-bottom:10px;
+    font-weight:700;
+}
+
+.history-item{
+    padding:10px 0;
+    border-bottom:1px solid rgba(255,255,255,0.06);
+
+    font-size:13px;
+    color:var(--muted);
+}
+
+/* EMPTY */
+.empty{
+    text-align:center;
+    padding:60px;
+    color:var(--muted);
+}
+
+/* PASSWORD MODAL */
+#passBox{
+    display:none;
+
+    position:fixed;
+    inset:0;
+
+    background:rgba(0,0,0,0.7);
+
+    align-items:center;
+    justify-content:center;
+
+    z-index:999;
+}
+
+.pass-box{
+    width:340px;
+
+    background:#fff;
+
+    color:#111827;
+
+    padding:24px;
+
+    border-radius:24px;
+
+    box-shadow:var(--shadow);
+}
+
+.pass-box h3{
+    margin-top:0;
+}
+
+.pass-box input{
+    width:100%;
+
+    padding:12px;
+
+    border-radius:12px;
+
+    border:1px solid #ddd;
+
+    margin-top:12px;
+}
+
+.modal-btn{
+    width:100%;
+    margin-top:12px;
+}
+
+/* RESPONSIVE */
+@media(max-width:1100px){
+
+    .wrapper{
+        grid-template-columns:1fr;
+    }
+
+    .kpis{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media(max-width:700px){
+
+    .header{
+        flex-direction:column;
+        gap:8px;
+        text-align:center;
+    }
+
+    .kpis{
+        grid-template-columns:1fr;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+
+    <div>
+        <h1>🎂 Cake Staging Monitoring</h1>
+        <span>Real-time staging temperature & transfer analytics</span>
+    </div>
+
+</div>
+
+<div class="wrapper">
+
+    <!-- SIDEBAR -->
+    <div class="panel">
+
+        <input id="search"
+        class="search"
+        placeholder="🔍 Search product / area / inspector..."
+        oninput="loadAdmin()">
+
+        <div class="actions">
+            <button class="export" onclick="exportCSV()">⬇ Export</button>
+            <button class="clear" onclick="clearData()">🗑 Clear</button>
+        </div>
+
+        <div class="kpis">
+
+            <div class="kpi">
+                <h2 id="kpi1">0</h2>
+                <small>STAGE 1</small>
+            </div>
+
+            <div class="kpi">
+                <h2 id="kpi2">0</h2>
+                <small>STAGE 2</small>
+            </div>
+
+            <div class="kpi">
+                <h2 id="kpi3">0</h2>
+                <small>STAGE 3</small>
+            </div>
+
+            <div class="kpi">
+                <h2 id="kpi4">0</h2>
+                <small>STAGE 4</small>
+            </div>
+
+        </div>
+
+        <div class="live-box">
+
+            <div class="live-title">
+                🔴 LIVE QA FEED
+            </div>
+
+            <div id="liveFeed"></div>
+
+        </div>
+
+    </div>
+
+    <!-- MAIN -->
+    <div class="records" id="records"></div>
+
+</div>
+
+<!-- PASSWORD -->
+<div id="passBox">
+
+    <div class="pass-box">
+
+        <h3>🔐 Admin Verification</h3>
+
+        <input id="passInput"
+        type="password"
+        placeholder="Enter password">
+
+        <button class="modal-btn clear"
+        onclick="confirmClear()">
+            Confirm Clear
+        </button>
+
+        <button class="modal-btn export"
+        onclick="closePass()">
+            Cancel
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+
+const $ = id => document.getElementById(id);
+const PASSWORD = "admin123";
+
+/* DATA */
+function getData(){
+try{
+let payload = JSON.parse(localStorage.getItem("adminData"));
+return payload?.records || [];
+}catch(e){return [];}
+}
+
+function getQAData(){
+try{
+return JSON.parse(localStorage.getItem("qaData")) || [];
+}catch(e){return [];}
+}
+
+/* KPI */
+function updateKPI(records){
+
+let s1=0,s2=0,s3=0,s4=0;
+
+records.forEach(r=>{
+
+let q = Number(r.qty || 0);
+
+if(r.area==="STAGE 1") s1+=q;
+if(r.area==="STAGE 2") s2+=q;
+if(r.area==="STAGE 3") s3+=q;
+if(r.area==="STAGE 4") s4+=q;
+
+});
+
+$("kpi1").innerText=s1;
+$("kpi2").innerText=s2;
+$("kpi3").innerText=s3;
+$("kpi4").innerText=s4;
+}
+
+/* LIVE FEED */
+function loadLiveFeed(){
+
+let data=getQAData().slice(0,8);
+
+if(!data.length){
+$("liveFeed").innerHTML="<div class='empty'>No live activity</div>";
+return;
+}
+
+let html="";
+
+data.forEach(r=>{
+
+html+=`
+<div class="live-item">
+
+<b>${r.product}</b><br>
+
+📍 ${r.area}<br>
+🌡 ${r.temp}°C<br>
+👤 ${r.inspector}<br>
+📦 Qty: ${r.qty}<br>
+
+🕒 ${new Date(r.createdAt).toLocaleString()}
+
+</div>
+`;
+
+});
+
+$("liveFeed").innerHTML=html;
+}
+
+/* LOAD */
+function loadAdmin(){
+
+let records=getData();
+
+let key=$("search").value.toLowerCase();
+
+records=records.filter(r=>
+
+(r.product||"").toLowerCase().includes(key) ||
+(r.area||"").toLowerCase().includes(key) ||
+(r.inspector||"").toLowerCase().includes(key) ||
+String(r.id).includes(key)
+
+);
+
+updateKPI(records);
+
+if(!records.length){
+
+$("records").innerHTML=
+"<div class='empty'>No QA records found</div>";
+
+return;
+}
+
+let html="";
+
+records.forEach(r=>{
+
+let temp=Number(r.temp||0);
+
+let status="ok";
+
+if(temp>5 && temp<=10) status="warning";
+if(temp>10) status="danger";
+
+html+=`
+
+<div class="card">
+
+<h2>
+
+${r.product}
+
+<span class="status ${status}">
+${status.toUpperCase()}
+</span>
+
+</h2>
+
+<div class="meta">
+
+🆔 ID: ${r.id}<br>
+📦 Qty: ${r.qty}<br>
+📍 Area: ${r.area}<br>
+🌡 Temp: ${r.temp}°C<br>
+👤 Inspector: ${r.inspector}<br>
+🚚 Dispatcher: ${r.dispatcher}<br>
+
+🕒 Created:
+${new Date(r.createdAt).toLocaleString()}<br>
+
+📤 Sent:
+${new Date(r.sentAt || r.createdAt).toLocaleString()}
+
+</div>
+
+<div class="history">
+
+<div class="history-title">
+📍 Transfer History
+</div>
+
+${
+(r.history||[]).map(h=>`
+
+<div class="history-item">
+
+➡ ${h.fromArea} → ${h.toArea}<br>
+
+🌡 ${h.fromTemp}°C → ${h.toTemp}°C<br>
+
+🕒 ${new Date(h.time).toLocaleString()}
+
+</div>
+
+`).join("")
+}
+
+</div>
+
+</div>
+`;
+});
+
+$("records").innerHTML=html;
+}
+
+/* EXPORT */
+function exportCSV(){
+
+let records=getData();
+
+if(!records.length){
+alert("No data");
+return;
+}
+
+let csv=
+"ID,Product,Qty,Area,Temp,Inspector,Dispatcher\n";
+
+records.forEach(r=>{
+
+csv+=`${r.id},${r.product},${r.qty},${r.area},${r.temp},${r.inspector},${r.dispatcher}\n`;
+
+});
+
+let blob=new Blob([csv],{type:"text/csv"});
+
+let a=document.createElement("a");
+
+a.href=URL.createObjectURL(blob);
+
+a.download="qa_staging_report.csv";
+
+a.click();
+}
+
+/* CLEAR */
+function clearData(){
+$("passBox").style.display="flex";
+}
+
+function closePass(){
+
+$("passBox").style.display="none";
+
+$("passInput").value="";
+}
+
+function confirmClear(){
+
+if($("passInput").value!==PASSWORD){
+
+alert("Wrong password");
+
+return;
+}
+
+localStorage.removeItem("adminData");
+
+closePass();
+
+loadAdmin();
+
+alert("Data cleared successfully");
+}
+
+/* AUTO REFRESH */
+setInterval(()=>{
+
+loadAdmin();
+loadLiveFeed();
+
+},2000);
+
+/* INIT */
+window.onload=()=>{
+
+loadAdmin();
+loadLiveFeed();
+
+};
+
+</script>
+
+</body>
+</html>

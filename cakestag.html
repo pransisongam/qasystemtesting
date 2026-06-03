@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>QA Cake Staging Monitoring</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+:root{
+    --bg1:#071426;
+    --bg2:#0f1f38;
+
+    --primary:#14b8a6;
+    --primary-dark:#0f766e;
+    --accent:#22c55e;
+
+    --card:rgba(255,255,255,0.95);
+    --border:#dbe4ee;
+
+    --text:#0f172a;
+    --muted:#64748b;
+
+    --success:#16a34a;
+    --danger:#dc2626;
+    --warning:#f59e0b;
+    --info:#2563eb;
+
+    --shadow:0 20px 50px rgba(0,0,0,0.18);
+}
+
+body{
+    background:
+    radial-gradient(circle at top left, rgba(20,184,166,0.22), transparent 25%),
+    radial-gradient(circle at bottom right, rgba(34,197,94,0.18), transparent 30%),
+    linear-gradient(135deg,var(--bg1),var(--bg2));
+
+    min-height:100vh;
+    padding:30px 15px 50px;
+    color:white;
+}
+
+/* HEADER */
+
+.header{
+    max-width:1400px;
+    margin:auto;
+    margin-bottom:25px;
+
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(14px);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:30px;
+    padding:35px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+    flex-wrap:wrap;
+
+    position:relative;
+    overflow:hidden;
+}
+
+.header::before{
+    content:'';
+    position:absolute;
+    width:260px;
+    height:260px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.08);
+    top:-120px;
+    right:-100px;
+}
+
+.header > div:first-child{
+    position:relative;
+    z-index:2;
+}
+
+.header h1{
+    margin:0;
+    font-size:42px;
+    font-weight:800;
+    color:white;
+}
+
+.header p{
+    margin-top:10px;
+    color:#dbeafe;
+    line-height:1.8;
+    font-size:15px;
+}
+
+.live{
+    position:relative;
+    z-index:2;
+
+    background:rgba(255,255,255,0.14);
+    padding:12px 20px;
+    border-radius:50px;
+    font-size:13px;
+    letter-spacing:1px;
+    font-weight:700;
+}
+
+/* MAIN */
+
+.container{
+    max-width:1400px;
+    margin:auto;
+
+    display:grid;
+    grid-template-columns:380px 1fr;
+    gap:25px;
+}
+
+@media(max-width:1100px){
+    .container{
+        grid-template-columns:1fr;
+    }
+}
+
+/* PANEL */
+
+.panel{
+    background:var(--card);
+    border-radius:28px;
+    padding:28px;
+    box-shadow:var(--shadow);
+    color:var(--text);
+}
+
+.panel h3{
+    margin-top:0;
+    margin-bottom:24px;
+    color:var(--primary-dark);
+    font-size:24px;
+}
+
+/* FORM */
+
+.input-group{
+    margin-bottom:20px;
+}
+
+label{
+    display:block;
+    margin-bottom:10px;
+    font-size:14px;
+    font-weight:600;
+    color:#334155;
+}
+
+input,
+select{
+    width:100%;
+    padding:15px;
+    border-radius:16px;
+    border:1px solid var(--border);
+    background:#f8fafc;
+    font-size:15px;
+    color:var(--text);
+    outline:none;
+    transition:0.25s ease;
+}
+
+input:focus,
+select:focus{
+    border-color:var(--primary);
+    background:white;
+    box-shadow:0 0 0 4px rgba(20,184,166,0.14);
+}
+
+option{
+    color:black;
+}
+
+button{
+    border:none;
+    cursor:pointer;
+    transition:0.25s ease;
+    font-weight:700;
+}
+
+/* BUTTON */
+
+.primary-btn{
+    width:100%;
+    padding:16px;
+    border-radius:18px;
+    background:linear-gradient(135deg,var(--primary),var(--accent));
+    color:white;
+    font-size:15px;
+    margin-top:10px;
+    box-shadow:0 10px 25px rgba(20,184,166,0.35);
+}
+
+.primary-btn:hover{
+    transform:translateY(-3px);
+}
+
+/* SEARCH */
+
+.search{
+    margin-bottom:22px;
+}
+
+.search input{
+    background:#f8fafc;
+}
+
+/* CARD */
+
+.row-card{
+    background:#f8fafc;
+    border:1px solid #e2e8f0;
+    border-radius:26px;
+    padding:24px;
+    margin-bottom:18px;
+    box-shadow:var(--shadow);
+    position:relative;
+    overflow:hidden;
+}
+
+.row-card::after{
+    content:"";
+    position:absolute;
+    width:180px;
+    height:180px;
+    border-radius:50%;
+    top:-90px;
+    right:-80px;
+    opacity:0.08;
+}
+
+.safe-card::after{
+    background:var(--success);
+}
+
+.danger-card::after{
+    background:var(--danger);
+}
+
+.card-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    flex-wrap:wrap;
+}
+
+.card-title{
+    font-size:22px;
+    font-weight:800;
+    color:var(--text);
+}
+
+.code{
+    color:var(--muted);
+    font-size:13px;
+    margin-top:5px;
+}
+
+.badge{
+    padding:10px 16px;
+    border-radius:50px;
+    color:white;
+    font-size:12px;
+    font-weight:800;
+}
+
+.safe{
+    background:var(--success);
+}
+
+.crit{
+    background:var(--danger);
+}
+
+/* INFO GRID */
+
+.info-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:14px;
+    margin-top:20px;
+}
+
+.info-box{
+    background:white;
+    border-radius:16px;
+    padding:15px;
+    border:1px solid #edf2f7;
+}
+
+.info-box small{
+    color:var(--muted);
+    display:block;
+    margin-bottom:6px;
+    font-size:12px;
+}
+
+.info-box b{
+    font-size:14px;
+    color:var(--text);
+}
+
+/* HISTORY */
+
+.history{
+    margin-top:22px;
+    background:white;
+    border-radius:18px;
+    padding:18px;
+    border:1px solid #edf2f7;
+}
+
+.history-title{
+    font-weight:800;
+    margin-bottom:12px;
+    color:var(--info);
+}
+
+.history-item{
+    padding:12px 0;
+    border-bottom:1px solid #e5e7eb;
+    font-size:13px;
+    line-height:1.8;
+    color:#334155;
+}
+
+.history-item:last-child{
+    border-bottom:none;
+}
+
+/* ACTIONS */
+
+.actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    margin-top:22px;
+}
+
+.transfer-btn{
+    background:#2563eb;
+    color:white;
+    padding:15px;
+    border-radius:16px;
+}
+
+.send-btn{
+    background:linear-gradient(135deg,var(--primary),var(--accent));
+    color:white;
+    padding:15px;
+    border-radius:16px;
+}
+
+.transfer-btn:hover,
+.send-btn:hover{
+    transform:translateY(-3px);
+}
+
+/* EMPTY */
+
+.empty{
+    text-align:center;
+    padding:60px 20px;
+    color:var(--muted);
+    font-size:15px;
+}
+
+/* POPUP */
+
+.popup{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.6);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:999;
+    padding:20px;
+}
+
+.popup-box{
+    width:100%;
+    max-width:380px;
+
+    background:white;
+    color:var(--text);
+
+    border-radius:30px;
+    padding:35px;
+
+    box-shadow:var(--shadow);
+
+    animation:popup 0.3s ease;
+}
+
+@keyframes popup{
+    from{
+        transform:scale(0.9);
+        opacity:0;
+    }
+    to{
+        transform:scale(1);
+        opacity:1;
+    }
+}
+
+.popup-box h3{
+    margin-top:0;
+    margin-bottom:20px;
+    color:var(--primary-dark);
+}
+
+.popup-box input,
+.popup-box select{
+    color:var(--text);
+    background:#f8fafc;
+    border:1px solid var(--border);
+}
+
+.popup-btn{
+    width:100%;
+    padding:15px;
+    margin-top:12px;
+    border-radius:16px;
+    font-weight:700;
+}
+
+.confirm-btn{
+    background:linear-gradient(135deg,var(--primary),var(--accent));
+    color:white;
+}
+
+.cancel-btn{
+    background:var(--danger);
+    color:white;
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+.header{
+    padding:28px;
+}
+
+.header h1{
+    font-size:32px;
+}
+
+.panel{
+    padding:22px;
+}
+
+.actions{
+    grid-template-columns:1fr;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+
+<div class="header">
+
+    <div>
+        <h1>🎂 QA Cake Staging Monitoring</h1>
+        <p>Cold chain monitoring • staging transfer • QA live tracking</p>
+    </div>
+
+    <div class="live">
+        ● LIVE SYSTEM
+    </div>
+
+</div>
+
+<!-- MAIN -->
+
+<div class="container">
+
+    <!-- LEFT PANEL -->
+
+    <div class="panel">
+
+        <h3>➕ Add Staging Record</h3>
+
+        <div class="input-group">
+            <label>Product</label>
+
+            <select id="product">
+                <option value="">Select Product</option>
+                <option>VAAC PREMIUM 6RD CAKE</option>
+                <option>MOCC PREMIUM 6RD CAKE</option>
+                <option>MEMA PREMIUM 6RD CAKE</option>
+                <option>UBCC PREMIUM 6RD CAKE</option>
+                <option>VAGC GRANDE 8RD CAKE</option>
+                <option>UBGC GRANDE 8RD CAKE</option>
+                <option>CHGC GRANDE 8RD CAKE</option>
+                <option>OTHERS</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label>Quantity</label>
+            <input id="qty" type="number" placeholder="Enter quantity">
+        </div>
+
+        <div class="input-group">
+            <label>Storage Area</label>
+
+            <select id="area">
+                <option value="">Select Area</option>
+                <option>STAGE 1</option>
+                <option>STAGE 2</option>
+                <option>STAGE 3</option>
+                <option>STAGE 4</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label>Temperature °C</label>
+            <input id="temp" type="number" placeholder="Enter temperature">
+        </div>
+
+        <div class="input-group">
+            <label>Inspector</label>
+
+            <select id="inspector">
+                <option value="">Select Inspector</option>
+                <option>D. RESUELLO</option>
+                <option>A. DOTON</option>
+                <option>M. AGANA</option>
+                <option>A. TAMPOYA</option>
+                <option>R. ARQUERO</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label>Dispatcher</label>
+            <input id="dispatcher" placeholder="Dispatcher name">
+        </div>
+
+        <div class="input-group">
+            <label>Shift</label>
+
+            <select id="shift">
+                <option value="">Select Shift</option>
+                <option>SHIFT A</option>
+                <option>SHIFT B</option>
+                <option>SHIFT C</option>
+            </select>
+        </div>
+
+        <button class="primary-btn" onclick="addRecord()">
+            ➕ Add Record
+        </button>
+
+    </div>
+
+    <!-- RIGHT PANEL -->
+
+    <div class="panel">
+
+        <h3>📡 Live Monitoring Dashboard</h3>
+
+        <div class="search">
+            <input id="search" placeholder="Search product, code or area..." oninput="load()">
+        </div>
+
+        <div id="cards"></div>
+
+    </div>
+
+</div>
+
+<!-- POPUP -->
+
+<div class="popup" id="popup">
+
+    <div class="popup-box">
+
+        <h3>🔄 Transfer Product</h3>
+
+        <select id="newArea">
+            <option value="">Select New Area</option>
+            <option>STAGE 1</option>
+            <option>STAGE 2</option>
+            <option>STAGE 3</option>
+            <option>STAGE 4</option>
+        </select>
+
+        <br><br>
+
+        <input id="newTemp" type="number" placeholder="New Temperature °C">
+
+        <button class="popup-btn confirm-btn" onclick="confirmTransfer()">
+            Confirm Transfer
+        </button>
+
+        <button class="popup-btn cancel-btn" onclick="closePopup()">
+            Cancel
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+
+const $ = id => document.getElementById(id);
+
+let selectedId = null;
+
+function getData(){
+    return JSON.parse(localStorage.getItem("qaData")) || [];
+}
+
+function saveData(d){
+    localStorage.setItem("qaData", JSON.stringify(d));
+}
+
+/* ADD */
+
+function addRecord(){
+
+    if(
+        !$("product").value ||
+        !$("qty").value ||
+        !$("area").value ||
+        !$("temp").value ||
+        !$("inspector").value ||
+        !$("dispatcher").value ||
+        !$("shift").value
+    ){
+        alert("Please complete all fields");
+        return;
+    }
+
+    let data = getData();
+
+    let now = new Date();
+
+    data.unshift({
+
+        id: Date.now(),
+
+        code: Math.floor(1000 + Math.random() * 9000),
+
+        product: $("product").value,
+        qty: +$("qty").value || 0,
+        area: $("area").value,
+        temp: +$("temp").value || 0,
+        inspector: $("inspector").value,
+        dispatcher: $("dispatcher").value,
+        shift: $("shift").value,
+
+        createdAt: now.toISOString(),
+        updatedAt: now.toISOString(),
+
+        history:[{
+            type:"CREATED",
+            fromArea:"-",
+            toArea:$("area").value,
+            fromTemp:"-",
+            toTemp:+$("temp").value || 0,
+            time:now.toISOString()
+        }]
+    });
+
+    saveData(data);
+
+    load();
+
+    alert("Record Added ✔");
+}
+
+/* POPUP */
+
+function openTransfer(id){
+    selectedId = id;
+    $("popup").style.display = "flex";
+}
+
+function closePopup(){
+    $("popup").style.display = "none";
+    selectedId = null;
+}
+
+/* TRANSFER */
+
+function confirmTransfer(){
+
+    let area = $("newArea").value;
+    let temp = $("newTemp").value;
+
+    if(!area || !temp){
+        alert("Fill all fields");
+        return;
+    }
+
+    let data = getData();
+
+    let rec = data.find(r => r.id === selectedId);
+
+    if(rec){
+
+        rec.history.push({
+
+            type:"TRANSFER",
+
+            fromArea:rec.area,
+            toArea:area,
+
+            fromTemp:rec.temp,
+            toTemp:+temp,
+
+            time:new Date().toISOString()
+        });
+
+        rec.area = area;
+        rec.temp = +temp;
+        rec.updatedAt = new Date().toISOString();
+    }
+
+    saveData(data);
+
+    closePopup();
+
+    load();
+
+    alert("Transferred ✔");
+}
+
+/* SEND */
+
+function sendToAdmin(id){
+
+    let data = getData();
+
+    let rec = data.find(r => r.id === id);
+
+    if(!rec) return;
+
+    rec.sentAt = new Date().toISOString();
+
+    let admin = JSON.parse(localStorage.getItem("adminData")) || {records:[]};
+
+    admin.records.unshift(rec);
+
+    localStorage.setItem("adminData", JSON.stringify(admin));
+
+    data = data.filter(r => r.id !== id);
+
+    saveData(data);
+
+    load();
+
+    alert("Sent to Admin ✔");
+}
+
+/* TEMP VALIDATION */
+
+function isTempOK(area,temp){
+
+    temp = Number(temp);
+
+    if(area==="STAGE 1") return temp>=15&&temp<=18;
+    if(area==="STAGE 2") return temp<=0;
+    if(area==="STAGE 3"||area==="STAGE 4") return temp>=1&&temp<=10;
+
+    return true;
+}
+
+/* LOAD */
+
+function load(){
+
+    let data = getData();
+
+    let k = $("search").value.toLowerCase();
+
+    data.sort((a,b)=>b.id-a.id);
+
+    data = data.filter(r=>
+
+        (r.product || "").toLowerCase().includes(k) ||
+        (r.area || "").toLowerCase().includes(k) ||
+        String(r.id || "").includes(k) ||
+        String(r.code || "").includes(k)
+    );
+
+    let html = "";
+
+    data.forEach(r=>{
+
+        let ok = isTempOK(r.area,r.temp);
+
+        html += `
+
+        <div class="row-card ${ok ? 'safe-card' : 'danger-card'}">
+
+            <div class="card-top">
+
+                <div>
+
+                    <div class="card-title">
+                        🎂 ${r.product}
+                    </div>
+
+                    <div class="code">
+                        Product Code #${r.code}
+                    </div>
+
+                </div>
+
+                <div class="badge ${ok ? 'safe' : 'crit'}">
+                    ${ok ? 'TEMP OK' : 'TEMP ERROR'}
+                </div>
+
+            </div>
+
+            <div class="info-grid">
+
+                <div class="info-box">
+                    <small>Quantity</small>
+                    <b>${r.qty}</b>
+                </div>
+
+                <div class="info-box">
+                    <small>Storage Area</small>
+                    <b>${r.area}</b>
+                </div>
+
+                <div class="info-box">
+                    <small>Temperature</small>
+                    <b>${r.temp}°C</b>
+                </div>
+
+                <div class="info-box">
+                    <small>Inspector</small>
+                    <b>${r.inspector}</b>
+                </div>
+
+                <div class="info-box">
+                    <small>Dispatcher</small>
+                    <b>${r.dispatcher}</b>
+                </div>
+
+                <div class="info-box">
+                    <small>Shift</small>
+                    <b>${r.shift}</b>
+                </div>
+
+            </div>
+
+            <div class="history">
+
+                <div class="history-title">
+                    📍 Transfer History
+                </div>
+
+                ${
+                    (r.history || []).map(h => `
+                    <div class="history-item">
+
+                        ➜ ${h.fromArea} → ${h.toArea}<br>
+
+                        🌡 ${h.fromTemp}°C → ${h.toTemp}°C<br>
+
+                        🕒 ${new Date(h.time).toLocaleString()}
+
+                    </div>
+                    `).join("")
+                }
+
+            </div>
+
+            <div class="actions">
+
+                <button class="transfer-btn" onclick="openTransfer(${r.id})">
+                    🔄 Transfer
+                </button>
+
+                <button class="send-btn" onclick="sendToAdmin(${r.id})">
+                    📤 Send
+                </button>
+
+            </div>
+
+        </div>
+        `;
+    });
+
+    $("cards").innerHTML =
+    data.length ? html : `<div class="empty">No active staging records</div>`;
+}
+
+window.onload = load;
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>GMP Monitoring System</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+:root{
+    --bg1:#071426;
+    --bg2:#0f1f38;
+
+    --primary:#14b8a6;
+    --primary-dark:#0f766e;
+    --accent:#22c55e;
+
+    --card:rgba(255,255,255,0.95);
+    --border:#dbe4ee;
+
+    --text:#0f172a;
+    --muted:#64748b;
+
+    --success:#16a34a;
+    --danger:#dc2626;
+
+    --shadow:0 20px 50px rgba(0,0,0,0.18);
+}
+
+body{
+    background:
+    radial-gradient(circle at top left, rgba(20,184,166,0.22), transparent 25%),
+    radial-gradient(circle at bottom right, rgba(34,197,94,0.18), transparent 30%),
+    linear-gradient(135deg,var(--bg1),var(--bg2));
+
+    min-height:100vh;
+    padding:30px 15px 50px;
+    color:white;
+}
+
+/* HEADER */
+
+.header{
+    max-width:1400px;
+    margin:auto;
+    margin-bottom:25px;
+
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(14px);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:30px;
+    padding:35px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+    flex-wrap:wrap;
+
+    position:relative;
+    overflow:hidden;
+}
+
+.header::before{
+    content:'';
+    position:absolute;
+    width:260px;
+    height:260px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.08);
+    top:-120px;
+    right:-100px;
+}
+
+.header-left{
+    position:relative;
+    z-index:2;
+}
+
+.header-left h1{
+    font-size:42px;
+    margin-bottom:12px;
+    font-weight:800;
+}
+
+.header-left p{
+    color:#dbeafe;
+    line-height:1.8;
+}
+
+.live-badge{
+    position:relative;
+    z-index:2;
+
+    background:rgba(255,255,255,0.14);
+    padding:12px 20px;
+    border-radius:50px;
+    font-size:13px;
+    letter-spacing:1px;
+    font-weight:700;
+}
+
+/* KPI */
+
+.kpi-grid{
+    max-width:1400px;
+    margin:25px auto;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:20px;
+}
+
+.kpi-card{
+    background:var(--card);
+    border-radius:28px;
+    padding:28px;
+    box-shadow:var(--shadow);
+    color:var(--text);
+}
+
+.kpi-card h3{
+    color:var(--muted);
+    font-size:14px;
+    margin-bottom:12px;
+}
+
+.kpi-card h1{
+    font-size:42px;
+    font-weight:800;
+}
+
+.total{
+    color:#2563eb;
+}
+
+.pass{
+    color:var(--success);
+}
+
+.fail{
+    color:var(--danger);
+}
+
+/* MAIN */
+
+.container{
+    max-width:1400px;
+    margin:auto;
+
+    display:grid;
+    grid-template-columns:400px 1fr;
+    gap:25px;
+}
+
+@media(max-width:1100px){
+    .container{
+        grid-template-columns:1fr;
+    }
+}
+
+/* CARD */
+
+.glass-card{
+    background:var(--card);
+    border-radius:28px;
+    padding:0;
+    box-shadow:var(--shadow);
+    overflow:hidden;
+    color:var(--text);
+}
+
+.card-header{
+    padding:28px;
+    border-bottom:1px solid #edf2f7;
+    background:linear-gradient(135deg,#f8fafc,#ffffff);
+}
+
+.card-header h2{
+    font-size:24px;
+    color:var(--primary-dark);
+    margin-bottom:8px;
+}
+
+.card-header p{
+    color:var(--muted);
+    line-height:1.7;
+}
+
+.card-body{
+    padding:28px;
+}
+
+/* FORM */
+
+.input-group{
+    margin-bottom:20px;
+}
+
+.input-group label{
+    display:block;
+    margin-bottom:10px;
+    font-size:14px;
+    font-weight:600;
+    color:#334155;
+}
+
+input,
+select{
+    width:100%;
+    padding:15px;
+    border-radius:16px;
+    border:1px solid var(--border);
+    background:#f8fafc;
+    font-size:15px;
+    color:var(--text);
+    outline:none;
+    transition:0.25s ease;
+}
+
+input:focus,
+select:focus{
+    border-color:var(--primary);
+    background:white;
+    box-shadow:0 0 0 4px rgba(20,184,166,0.14);
+}
+
+.search-box{
+    margin-bottom:22px;
+}
+
+/* CHECKLIST */
+
+.checklist{
+    margin-top:25px;
+}
+
+.check-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+
+    padding:16px;
+    border-radius:18px;
+    background:#f8fafc;
+    border:1px solid #edf2f7;
+    margin-bottom:14px;
+}
+
+.check-item span{
+    flex:1;
+    font-size:14px;
+    line-height:1.6;
+    color:#334155;
+}
+
+.check-item select{
+    max-width:130px;
+}
+
+/* BUTTON */
+
+button{
+    border:none;
+    cursor:pointer;
+    transition:0.25s ease;
+}
+
+.primary-btn{
+    width:100%;
+    padding:17px;
+    border-radius:18px;
+    background:linear-gradient(135deg,var(--primary),var(--accent));
+    color:white;
+    font-weight:700;
+    font-size:15px;
+    margin-top:12px;
+    box-shadow:0 10px 25px rgba(20,184,166,0.35);
+}
+
+.primary-btn:hover{
+    transform:translateY(-3px);
+}
+
+.action-btn{
+    padding:12px 16px;
+    border-radius:14px;
+    color:white;
+    font-size:13px;
+    font-weight:700;
+}
+
+.blue{
+    background:#2563eb;
+}
+
+.green{
+    background:#16a34a;
+}
+
+.red{
+    background:#dc2626;
+}
+
+/* LIVE SECTION */
+
+.line-group{
+    margin-bottom:30px;
+}
+
+.line-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    flex-wrap:wrap;
+    margin-bottom:18px;
+}
+
+.line-title{
+    font-size:24px;
+    font-weight:800;
+    color:var(--primary-dark);
+}
+
+.employee-card{
+    background:#f8fafc;
+    border:1px solid #e2e8f0;
+    border-radius:24px;
+    padding:22px;
+    margin-bottom:16px;
+}
+
+.employee-top{
+    display:flex;
+    justify-content:space-between;
+    gap:20px;
+    flex-wrap:wrap;
+    margin-bottom:14px;
+}
+
+.employee-name{
+    font-size:20px;
+    font-weight:800;
+    color:var(--text);
+}
+
+.meta{
+    color:var(--muted);
+    font-size:13px;
+    line-height:1.8;
+    margin-top:8px;
+}
+
+.status{
+    padding:10px 16px;
+    border-radius:50px;
+    font-size:12px;
+    font-weight:800;
+    color:white;
+    height:fit-content;
+}
+
+.pass-badge{
+    background:var(--success);
+}
+
+.fail-badge{
+    background:var(--danger);
+}
+
+.complied{
+    margin-top:10px;
+    color:var(--success);
+    font-weight:700;
+    font-size:13px;
+}
+
+.btn-row{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:18px;
+}
+
+/* MODAL */
+
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.6);
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+    z-index:999;
+}
+
+.modal-content{
+    width:100%;
+    max-width:700px;
+    max-height:90vh;
+    overflow:auto;
+
+    background:white;
+    color:var(--text);
+
+    border-radius:30px;
+    padding:35px;
+    animation:pop 0.3s ease;
+}
+
+@keyframes pop{
+    from{
+        opacity:0;
+        transform:scale(0.92);
+    }
+    to{
+        opacity:1;
+        transform:scale(1);
+    }
+}
+
+.modal-content h2{
+    margin-bottom:25px;
+    color:var(--primary-dark);
+}
+
+.check-row{
+    display:flex;
+    justify-content:space-between;
+    gap:15px;
+
+    padding:14px 0;
+    border-bottom:1px solid #e2e8f0;
+}
+
+.check-row span:first-child{
+    color:#334155;
+}
+
+.check-row span:last-child{
+    font-weight:700;
+}
+
+.good{
+    color:var(--success);
+}
+
+.bad{
+    color:var(--danger);
+}
+
+.close-btn{
+    width:100%;
+    padding:16px;
+    margin-top:24px;
+    border-radius:18px;
+    background:linear-gradient(135deg,var(--primary),var(--accent));
+    color:white;
+    font-weight:700;
+    font-size:15px;
+}
+
+.empty{
+    text-align:center;
+    padding:60px 20px;
+    color:var(--muted);
+    font-size:15px;
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+.header{
+    padding:28px;
+}
+
+.header-left h1{
+    font-size:32px;
+}
+
+.kpi-card h1{
+    font-size:34px;
+}
+
+.card-body,
+.card-header{
+    padding:22px;
+}
+
+.check-item{
+    flex-direction:column;
+    align-items:flex-start;
+}
+
+.check-item select{
+    max-width:100%;
+}
+
+.btn-row{
+    flex-direction:column;
+}
+
+.action-btn{
+    width:100%;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+
+    <div class="header-left">
+        <h1>👨‍🏭 GMP Monitoring System</h1>
+        <p>Live hygiene and personnel compliance monitoring dashboard</p>
+    </div>
+
+    <div class="live-badge">
+        🔴 LIVE QA TRACKING
+    </div>
+
+</div>
+
+<div class="kpi-grid">
+
+    <div class="kpi-card">
+        <h3>Total Employees</h3>
+        <h1 class="total" id="total">0</h1>
+    </div>
+
+    <div class="kpi-card">
+        <h3>PASS</h3>
+        <h1 class="pass" id="pass">0</h1>
+    </div>
+
+    <div class="kpi-card">
+        <h3>FAIL</h3>
+        <h1 class="fail" id="fail">0</h1>
+    </div>
+
+    <div class="kpi-card">
+        <h3>Last Update</h3>
+        <h3 id="lastUpdate" style="margin-top:12px;color:white;">-</h3>
+    </div>
+
+</div>
+
+<div class="container">
+
+    <!-- LEFT -->
+
+    <div class="glass-card">
+
+        <div class="card-header">
+            <h2>➕ Add Employee</h2>
+            <p>Create GMP compliance inspection report</p>
+        </div>
+
+        <div class="card-body">
+
+            <div class="input-group">
+                <label>Employee Name</label>
+                <input id="name" placeholder="Enter employee name">
+            </div>
+
+            <div class="input-group">
+                <label>Production Line</label>
+                <select id="line">
+                    <option>Steward Line</option>
+                    <option>Bakery Line</option>
+                    <option>Base Line</option>
+                    <option>Packaging Line</option>
+                    <option>Warehouse</option>
+                    <option>Prep Line</option>
+                    <option>Cakeline</option>
+                    <option>Dispatching Line</option>
+                    <option>Comfort Snack Line</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>Date</label>
+                <input id="date" type="date">
+            </div>
+
+            <div class="input-group">
+                <label>Inspector</label>
+                <input id="inspector" placeholder="Inspector name">
+            </div>
+
+            <div class="checklist" id="checklist"></div>
+
+            <button class="primary-btn" onclick="add()">
+                📤 Submit GMP Report
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- RIGHT -->
+
+    <div class="glass-card">
+
+        <div class="card-header">
+            <h2>📡 Live GMP Monitoring</h2>
+            <p>Real-time personnel compliance status</p>
+        </div>
+
+        <div class="card-body">
+
+            <input
+            id="search"
+            class="search-box"
+            placeholder="🔍 Search employee or line..."
+            onkeyup="load()">
+
+            <div id="cards"></div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- MODAL -->
+
+<div class="modal" id="modal">
+
+    <div class="modal-content">
+
+        <h2>📋 Employee Checklist</h2>
+
+        <div id="modalBody"></div>
+
+        <button class="close-btn" onclick="closeModal()">
+            Close
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+
+const labels = [
+"Plain White/Violet Working Shirt",
+"Black/Violet Working Pants",
+"Arm Sleeve & White Apron",
+"Hairnet & Turban",
+"Facemask (Mouth & Nose are Covered)",
+"Wearing Black Socks & Clean White Clog Shoes",
+"Proper Haircut",
+"Without mustache & Beard",
+"Finger Nails kept short & Clean",
+"No Makeup, Nail Polish & Excessive Perfume Applied",
+"No Jewelries, accessories, and Keys Worn",
+"No Open Cuts & Wounds",
+"No Sign of Illness or Contagious Disease"
+];
+
+const checklist = document.getElementById("checklist");
+
+labels.forEach((l,i)=>{
+
+    checklist.innerHTML += `
+    <div class="check-item">
+        <span>${l}</span>
+
+        <select id="c${i+1}">
+            <option>PASS</option>
+            <option>FAIL</option>
+        </select>
+    </div>`;
+});
+
+document.getElementById("date").value =
+new Date().toISOString().split("T")[0];
+
+const cards = document.getElementById("cards");
+
+const val = id => document.getElementById(id).value || "";
+
+function getStatus(e){
+
+    if(e.compliedAt) return "PASS";
+
+    return Object.keys(e)
+    .filter(k=>k.startsWith("c"))
+    .some(k=>e[k]==="FAIL")
+    ? "FAIL" : "PASS";
+}
+
+function add(){
+
+    if(!val("name") || !val("inspector")){
+        alert("Please complete required fields");
+        return;
+    }
+
+    let data =
+    JSON.parse(localStorage.getItem("gmpData")) || [];
+
+    let emp = {
+        id:Date.now(),
+        name:val("name"),
+        line:val("line"),
+        date:val("date"),
+        inspector:val("inspector"),
+        time:new Date().toISOString(),
+        complied:false,
+        compliedAt:null,
+        sent:false
+    };
+
+    labels.forEach((_,i)=>{
+        emp[`c${i+1}`] = val(`c${i+1}`);
+    });
+
+    data.push(emp);
+
+    localStorage.setItem(
+        "gmpData",
+        JSON.stringify(data)
+    );
+
+    load();
+
+    alert("Employee GMP report added successfully");
+}
+
+function comply(id){
+
+    let data =
+    JSON.parse(localStorage.getItem("gmpData")) || [];
+
+    data = data.map(e=>{
+
+        if(e.id === id){
+
+            e.complied = true;
+
+            e.compliedAt =
+            new Date().toLocaleString();
+        }
+
+        return e;
+    });
+
+    localStorage.setItem(
+        "gmpData",
+        JSON.stringify(data)
+    );
+
+    load();
+}
+
+function sendLine(line){
+
+    let data =
+    JSON.parse(localStorage.getItem("gmpData")) || [];
+
+    let sent =
+    JSON.parse(localStorage.getItem("gmpSent")) || [];
+
+    let remain = [];
+
+    data.forEach(e=>{
+
+        if(e.line === line){
+
+            e.sentAt =
+            new Date().toLocaleString();
+
+            sent.push(e);
+
+        }else{
+            remain.push(e);
+        }
+
+    });
+
+    localStorage.setItem(
+        "gmpData",
+        JSON.stringify(remain)
+    );
+
+    localStorage.setItem(
+        "gmpSent",
+        JSON.stringify(sent)
+    );
+
+    alert("Entire line sent successfully");
+
+    load();
+}
+
+function view(id){
+
+    let data =
+    JSON.parse(localStorage.getItem("gmpData")) || [];
+
+    let e = data.find(x=>x.id===id);
+
+    if(!e) return;
+
+    let html = `
+    <div style="margin-bottom:20px;">
+        <h3>${e.name}</h3>
+        <p>${e.line}</p>
+        <p>${e.date}</p>
+    </div>`;
+
+    labels.forEach((l,i)=>{
+
+        html += `
+        <div class="check-row">
+
+            <span>${l}</span>
+
+            <span class="${
+                e[`c${i+1}`]==='PASS'
+                ? 'good'
+                : 'bad'
+            }">
+
+            ${e[`c${i+1}`]}
+
+            </span>
+
+        </div>`;
+    });
+
+    document.getElementById("modalBody").innerHTML =
+    html;
+
+    document.getElementById("modal").style.display =
+    "flex";
+}
+
+function closeModal(){
+
+    document.getElementById("modal").style.display =
+    "none";
+}
+
+function load(){
+
+    let data =
+    JSON.parse(localStorage.getItem("gmpData")) || [];
+
+    let keyword =
+    val("search").toLowerCase();
+
+    let filtered = data.filter(e=>
+
+        !e.sent && (
+
+            (e.name || "")
+            .toLowerCase()
+            .includes(keyword)
+
+            ||
+
+            (e.line || "")
+            .toLowerCase()
+            .includes(keyword)
+        )
+    );
+
+    let grouped = {};
+
+    filtered.forEach(e=>{
+
+        if(!grouped[e.line]){
+            grouped[e.line] = [];
+        }
+
+        grouped[e.line].push(e);
+
+    });
+
+    let html = "";
+
+    let total = 0;
+    let pass = 0;
+    let fail = 0;
+
+    Object.keys(grouped).forEach(line=>{
+
+        html += `
+        <div class="line-group">
+
+            <div class="line-header">
+
+                <div class="line-title">
+                    🏭 ${line}
+                </div>
+
+                <button
+                class="action-btn blue"
+                onclick="sendLine('${line}')">
+
+                📤 Send Entire Line
+                (${grouped[line].length})
+
+                </button>
+
+            </div>`;
+
+        grouped[line].forEach(e=>{
+
+            total++;
+
+            const status = getStatus(e);
+
+            if(status === "PASS"){
+                pass++;
+            }else{
+                fail++;
+            }
+
+            html += `
+            <div class="employee-card">
+
+                <div class="employee-top">
+
+                    <div>
+                        <div class="employee-name">
+                            ${e.name}
+                        </div>
+
+                        <div class="meta">
+                            📅 ${e.date}<br>
+                            👨‍🔬 ${e.inspector}<br>
+                            🕒 ${new Date(e.time).toLocaleTimeString()}
+                        </div>
+                    </div>
+
+                    <div class="status ${
+                        status === "PASS"
+                        ? "pass-badge"
+                        : "fail-badge"
+                    }">
+
+                    ${status}
+
+                    </div>
+
+                </div>
+
+                ${
+                    e.compliedAt
+                    ?
+                    `<div class="complied">
+                        ✔ Complied at ${e.compliedAt}
+                    </div>`
+                    : ""
+                }
+
+                <div class="btn-row">
+
+                    <button
+                    class="action-btn blue"
+                    onclick="view(${e.id})">
+
+                    View
+
+                    </button>
+
+                    ${
+                        status === "FAIL"
+                        && !e.compliedAt
+
+                        ?
+
+                        `<button
+                        class="action-btn green"
+                        onclick="comply(${e.id})">
+
+                        ✔ Comply
+
+                        </button>`
+
+                        : ""
+                    }
+
+                </div>
+
+            </div>`;
+        });
+
+        html += `</div>`;
+    });
+
+    cards.innerHTML =
+    html ||
+    `<div class="empty">
+        No live GMP monitoring data
+    </div>`;
+
+    document.getElementById("total").innerText =
+    total;
+
+    document.getElementById("pass").innerText =
+    pass;
+
+    document.getElementById("fail").innerText =
+    fail;
+
+    document.getElementById("lastUpdate").innerText =
+    new Date().toLocaleString();
+}
+
+let last = "";
+
+function live(){
+
+    let data =
+    localStorage.getItem("gmpData") || "";
+
+    if(data !== last){
+
+        last = data;
+
+        load();
+    }
+}
+
+window.onload = ()=>{
+
+    load();
+
+    setInterval(live,1500);
+};
+
+</script>
+
+</body>
+</html>

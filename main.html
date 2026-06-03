@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>QA Control Center</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+:root{
+    --bg1:#071426;
+    --bg2:#0f1f38;
+    --card:#ffffff;
+    --primary:#14b8a6;
+    --primary-dark:#0f766e;
+    --accent:#22c55e;
+    --text:#0f172a;
+    --muted:#64748b;
+    --border:#e2e8f0;
+    --shadow:0 20px 50px rgba(0,0,0,0.18);
+}
+
+body{
+    background:
+    radial-gradient(circle at top left, rgba(20,184,166,0.25), transparent 25%),
+    radial-gradient(circle at bottom right, rgba(34,197,94,0.20), transparent 30%),
+    linear-gradient(135deg,var(--bg1),var(--bg2));
+    min-height:100vh;
+    padding:25px 15px 40px;
+    color:white;
+}
+
+/* WRAPPER */
+.wrapper{
+    max-width:1300px;
+    margin:auto;
+}
+
+/* HEADER */
+.header{
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(14px);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:28px;
+    padding:35px;
+    margin-bottom:30px;
+    position:relative;
+    overflow:hidden;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+    flex-wrap:wrap;
+}
+
+.header::before{
+    content:'';
+    position:absolute;
+    width:260px;
+    height:260px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.06);
+    top:-120px;
+    right:-100px;
+}
+
+.header-content{
+    position:relative;
+    z-index:2;
+}
+
+.badge{
+    display:inline-block;
+    background:rgba(255,255,255,0.12);
+    padding:10px 18px;
+    border-radius:50px;
+    font-size:13px;
+    letter-spacing:1px;
+    margin-bottom:18px;
+}
+
+.header h1{
+    font-size:42px;
+    font-weight:800;
+    margin-bottom:12px;
+}
+
+.header p{
+    color:#dbeafe;
+    max-width:700px;
+    line-height:1.7;
+}
+
+/* USER BOX */
+.user-panel{
+    position:relative;
+    z-index:2;
+    background:rgba(255,255,255,0.08);
+    padding:18px;
+    border-radius:20px;
+    min-width:240px;
+    border:1px solid rgba(255,255,255,0.08);
+}
+
+.user-panel h3{
+    margin-bottom:8px;
+    font-size:16px;
+}
+
+.user-panel p{
+    font-size:13px;
+    color:#cbd5e1;
+    margin-bottom:15px;
+}
+
+.action-buttons{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.btn{
+    border:none;
+    padding:12px 16px;
+    border-radius:14px;
+    cursor:pointer;
+    font-weight:700;
+    transition:0.25s ease;
+    font-size:13px;
+}
+
+.btn:hover{
+    transform:translateY(-3px);
+}
+
+.theme-btn{
+    background:linear-gradient(135deg,#2563eb,#3b82f6);
+    color:white;
+}
+
+.logout-btn{
+    background:linear-gradient(135deg,#ef4444,#dc2626);
+    color:white;
+}
+
+/* DASHBOARD GRID */
+.dashboard-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:24px;
+}
+
+/* CARDS */
+.card{
+    position:relative;
+    overflow:hidden;
+    background:rgba(255,255,255,0.95);
+    border-radius:28px;
+    padding:28px;
+    color:var(--text);
+    box-shadow:var(--shadow);
+    cursor:pointer;
+    transition:0.3s ease;
+}
+
+.card:hover{
+    transform:translateY(-8px);
+}
+
+.card::before{
+    content:'';
+    position:absolute;
+    width:180px;
+    height:180px;
+    background:linear-gradient(
+        135deg,
+        rgba(20,184,166,0.18),
+        rgba(34,197,94,0.08)
+    );
+    border-radius:50%;
+    top:-70px;
+    right:-70px;
+}
+
+.card-icon{
+    width:70px;
+    height:70px;
+    border-radius:22px;
+    background:linear-gradient(
+        135deg,
+        var(--primary),
+        var(--accent)
+    );
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:34px;
+    margin-bottom:22px;
+    color:white;
+    position:relative;
+    z-index:2;
+    box-shadow:0 12px 25px rgba(20,184,166,0.25);
+}
+
+.card h2{
+    font-size:20px;
+    margin-bottom:10px;
+    position:relative;
+    z-index:2;
+}
+
+.card p{
+    color:var(--muted);
+    font-size:14px;
+    line-height:1.7;
+    position:relative;
+    z-index:2;
+}
+
+.card-footer{
+    margin-top:22px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    position:relative;
+    z-index:2;
+}
+
+.open-btn{
+    background:linear-gradient(
+        135deg,
+        var(--primary),
+        var(--accent)
+    );
+    color:white;
+    border:none;
+    padding:10px 16px;
+    border-radius:14px;
+    font-size:13px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.status{
+    font-size:12px;
+    color:#16a34a;
+    font-weight:700;
+}
+
+/* FOOTER */
+.footer{
+    text-align:center;
+    margin-top:35px;
+    color:#cbd5e1;
+    font-size:13px;
+}
+
+/* DARK MODE */
+.dark-mode{
+    filter:hue-rotate(180deg);
+}
+
+/* MOBILE */
+@media(max-width:768px){
+
+.header{
+    padding:25px;
+}
+
+.header h1{
+    font-size:32px;
+}
+
+.user-panel{
+    width:100%;
+}
+
+.action-buttons{
+    flex-direction:column;
+}
+
+.btn{
+    width:100%;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+    <!-- HEADER -->
+    <div class="header">
+
+        <div class="header-content">
+
+            <div class="badge">
+                QA DIGITAL MANAGEMENT SYSTEM
+            </div>
+
+            <h1>🏭 Quality Assurance Control Center</h1>
+
+            <p>
+                Centralized quality assurance dashboard for production monitoring,
+                reject management, compliance verification, sensory evaluation,
+                and operational reporting.
+            </p>
+
+        </div>
+
+        <div class="user-panel">
+
+            <h3 id="userInfo">User</h3>
+
+            <p>
+                Access secure quality monitoring tools and production systems.
+            </p>
+                <button class="btn logout-btn"
+                onclick="logout()">
+                    🚪 Logout
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="dashboard-grid">
+
+        <div class="card" onclick="openPage('sensory.html')">
+
+            <div class="card-icon">🍽</div>
+
+            <h2>Sensory Evaluation</h2>
+
+            <p>
+                Product quality scoring, sensory analysis,
+                taste evaluation, and acceptability monitoring.
+            </p>
+
+            <div class="card-footer">
+                <span class="status">● Active</span>
+                <button class="open-btn">Open</button>
+            </div>
+
+        </div>
+
+        <div class="card" onclick="openPage('inspection.html')">
+
+            <div class="card-icon">🏭</div>
+
+            <h2>Production Inspection</h2>
+
+            <p>
+                Real-time production line inspection,
+                monitoring, and process verification.
+            </p>
+
+            <div class="card-footer">
+                <span class="status">● Active</span>
+                <button class="open-btn">Open</button>
+            </div>
+
+        </div>
+
+        <div class="card" onclick="openPage('reject.html')">
+
+            <div class="card-icon">⚠</div>
+
+            <h2>Reject Reports</h2>
+
+            <p>
+                Track production rejects,
+                root causes, corrective actions,
+                and quality incidents.
+            </p>
+
+            <div class="card-footer">
+                <span class="status">● Active</span>
+                <button class="open-btn">Open</button>
+            </div>
+
+        </div>
+
+        <div class="card" onclick="openPage('gmp.html')">
+
+            <div class="card-icon">👨‍🏭</div>
+
+            <h2>GMP Compliance</h2>
+
+            <p>
+                Hygiene inspection, safety compliance,
+                sanitation audits, and GMP monitoring.
+            </p>
+
+            <div class="card-footer">
+                <span class="status">● Active</span>
+                <button class="open-btn">Open</button>
+            </div>
+
+        </div>
+
+        <div class="card" onclick="openPage('deltruck.html')">
+
+            <div class="card-icon">🚚</div>
+
+            <h2>Delivery Compliance</h2>
+
+            <p>
+                Delivery truck inspection,
+                logistics verification,
+                and dispatch compliance tracking.
+            </p>
+
+            <div class="card-footer">
+                <span class="status">● Active</span>
+                <button class="open-btn">Open</button>
+            </div>
+
+        </div>
+
+        <div class="card" onclick="openPage('cakestag.html')">
+
+            <div class="card-icon">🎂</div>
+
+            <h2>Staging Area</h2>
+
+            <p>
+                Environmental monitoring,
+                staging inspection,
+                and storage verification system.
+            </p>
+
+            <div class="card-footer">
+                <span class="status">● Active</span>
+                <button class="open-btn">Open</button>
+            </div>
+
+        </div>
+
+        <div class="card" onclick="openPage('equipment.html')">
+
+            <div class="card-icon">📊</div>
+
+            <h2>Equipment Monitoring</h2>
+
+            <p>
+                Machine monitoring dashboard,
+                operational status tracking,
+                and maintenance reporting.
+            </p>
+
+            <div class="card-footer">
+                <span class="status">● Active</span>
+                <button class="open-btn">Open</button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="footer">
+        QA Monitoring System © 2026 • Production Intelligence Platform
+    </div>
+
+</div>
+
+<script>
+
+const username = localStorage.getItem("username");
+const role = localStorage.getItem("role");
+
+if(!username || !role){
+    window.location.href = "login.html";
+}
+
+document.getElementById("userInfo").innerHTML =
+`👤 ${username} <br><small>${role.toUpperCase()}</small>`;
+
+function logout(){
+
+    localStorage.clear();
+
+    window.location.href = "login.html";
+
+}
+
+function openPage(page){
+
+    window.location.href = page;
+
+}
+
+function toggleTheme(){
+
+    document.body.classList.toggle("dark-mode");
+
+}
+
+</script>
+
+</body>
+</html>

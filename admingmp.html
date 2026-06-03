@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>GMP Admin Monitoring</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+
+:root{
+    --bg:#06111f;
+    --panel:rgba(15,23,42,0.82);
+    --panel2:rgba(30,41,59,0.82);
+
+    --border:rgba(255,255,255,0.08);
+
+    --primary:#22c55e;
+    --primary2:#16a34a;
+
+    --blue:#3b82f6;
+    --red:#ef4444;
+    --orange:#f59e0b;
+
+    --text:#f8fafc;
+    --muted:#94a3b8;
+
+    --shadow:0 20px 45px rgba(0,0,0,0.4);
+    --radius:22px;
+}
+
+*{
+    box-sizing:border-box;
+    font-family:Segoe UI, Arial, sans-serif;
+}
+
+body{
+    margin:0;
+    color:var(--text);
+
+    background:
+    radial-gradient(circle at top left, rgba(34,197,94,0.12), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(59,130,246,0.12), transparent 30%),
+    linear-gradient(135deg,#020617,#071226,#0f172a);
+
+    min-height:100vh;
+}
+
+/* HEADER */
+.header{
+    position:sticky;
+    top:0;
+    z-index:100;
+
+    padding:22px;
+
+    background:rgba(2,6,23,0.85);
+    backdrop-filter:blur(16px);
+
+    border-bottom:1px solid var(--border);
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:15px;
+}
+
+.header-left{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.logo{
+    width:58px;
+    height:58px;
+    border-radius:18px;
+
+    background:linear-gradient(135deg,var(--primary),var(--blue));
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:28px;
+
+    box-shadow:0 12px 30px rgba(34,197,94,0.35);
+}
+
+.header h1{
+    margin:0;
+    font-size:24px;
+}
+
+.header small{
+    color:var(--muted);
+}
+
+/* CONTAINER */
+.container{
+    max-width:1400px;
+    margin:auto;
+    padding:25px;
+}
+
+/* KPI */
+.kpis{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:18px;
+    margin-bottom:24px;
+}
+
+.kpi{
+    background:var(--panel);
+    backdrop-filter:blur(14px);
+
+    border:1px solid var(--border);
+
+    border-radius:var(--radius);
+
+    padding:22px;
+
+    box-shadow:var(--shadow);
+}
+
+.kpi small{
+    color:var(--muted);
+}
+
+.kpi h2{
+    margin:8px 0 0;
+    font-size:34px;
+}
+
+/* TOP PANEL */
+.top-panel{
+    background:var(--panel);
+    backdrop-filter:blur(14px);
+
+    border:1px solid var(--border);
+
+    border-radius:var(--radius);
+
+    padding:20px;
+
+    margin-bottom:22px;
+
+    box-shadow:var(--shadow);
+}
+
+.controls{
+    display:grid;
+    grid-template-columns:1fr 1fr auto auto;
+    gap:12px;
+}
+
+input,select{
+    width:100%;
+    padding:14px;
+
+    border-radius:14px;
+
+    border:1px solid rgba(255,255,255,0.08);
+
+    background:rgba(255,255,255,0.04);
+
+    color:var(--text);
+
+    outline:none;
+}
+
+input::placeholder{
+    color:#94a3b8;
+}
+
+button{
+    border:none;
+    border-radius:14px;
+
+    padding:14px 18px;
+
+    color:white;
+    font-weight:700;
+
+    cursor:pointer;
+    transition:0.25s;
+}
+
+button:hover{
+    transform:translateY(-2px);
+}
+
+.export-btn{
+    background:linear-gradient(135deg,var(--blue),#2563eb);
+}
+
+.delete-btn{
+    background:linear-gradient(135deg,var(--red),#dc2626);
+}
+
+/* WARNING */
+.warning-box{
+    background:linear-gradient(135deg,
+    rgba(239,68,68,0.16),
+    rgba(127,29,29,0.15));
+
+    border:1px solid rgba(239,68,68,0.25);
+
+    border-radius:var(--radius);
+
+    padding:20px;
+
+    margin-bottom:22px;
+
+    box-shadow:var(--shadow);
+}
+
+.warning-box h3{
+    margin-top:0;
+}
+
+.warning-item{
+    background:rgba(255,255,255,0.06);
+
+    padding:12px;
+    border-radius:14px;
+
+    margin-top:10px;
+
+    border-left:5px solid var(--red);
+}
+
+/* GROUP */
+.group{
+    margin-bottom:22px;
+}
+
+.group-header{
+    background:var(--panel);
+
+    border:1px solid var(--border);
+
+    border-radius:18px;
+
+    padding:18px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    cursor:pointer;
+
+    backdrop-filter:blur(14px);
+
+    box-shadow:var(--shadow);
+}
+
+.group-header:hover{
+    background:rgba(30,41,59,0.9);
+}
+
+.group-content{
+    margin-top:14px;
+
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+    gap:16px;
+}
+
+/* CARD */
+.card{
+    background:var(--panel2);
+
+    border-radius:22px;
+
+    border:1px solid var(--border);
+
+    padding:18px;
+
+    backdrop-filter:blur(14px);
+
+    box-shadow:var(--shadow);
+
+    transition:0.25s;
+}
+
+.card:hover{
+    transform:translateY(-3px);
+}
+
+.card-pass{
+    border-top:5px solid var(--primary);
+}
+
+.card-fail{
+    border-top:5px solid var(--red);
+}
+
+.card-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+}
+
+.employee{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.avatar{
+    width:52px;
+    height:52px;
+    border-radius:50%;
+
+    background:linear-gradient(135deg,var(--blue),#6366f1);
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-weight:bold;
+    font-size:18px;
+}
+
+.status{
+    padding:6px 12px;
+    border-radius:999px;
+
+    font-size:12px;
+    font-weight:700;
+}
+
+.pass{
+    background:rgba(34,197,94,0.18);
+    color:#86efac;
+}
+
+.fail{
+    background:rgba(239,68,68,0.18);
+    color:#fca5a5;
+}
+
+.meta{
+    margin-top:15px;
+    line-height:1.8;
+    color:var(--muted);
+    font-size:14px;
+}
+
+.card-actions{
+    margin-top:18px;
+}
+
+.view-btn{
+    width:100%;
+    background:linear-gradient(135deg,var(--primary),var(--primary2));
+}
+
+/* COMPLIED */
+.complied-tag{
+    margin-top:10px;
+
+    display:inline-block;
+
+    padding:6px 12px;
+
+    border-radius:999px;
+
+    background:rgba(34,197,94,0.18);
+
+    color:#86efac;
+
+    border:1px solid rgba(34,197,94,0.25);
+
+    font-size:12px;
+    font-weight:700;
+}
+
+/* MODAL */
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+
+    background:rgba(0,0,0,0.7);
+
+    align-items:center;
+    justify-content:center;
+
+    z-index:999;
+}
+
+.modal-box{
+    width:95%;
+    max-width:700px;
+
+    max-height:85vh;
+    overflow:auto;
+
+    background:#0f172a;
+
+    border-radius:26px;
+
+    border:1px solid var(--border);
+
+    padding:24px;
+
+    box-shadow:var(--shadow);
+}
+
+/* CHECKLIST */
+.checklist-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:14px;
+
+    border-radius:14px;
+
+    margin-bottom:10px;
+}
+
+.check-pass{
+    background:rgba(34,197,94,0.10);
+    border-left:5px solid var(--primary);
+}
+
+.check-fail{
+    background:rgba(239,68,68,0.10);
+    border-left:5px solid var(--red);
+}
+
+.close-btn{
+    margin-top:12px;
+    background:linear-gradient(135deg,#475569,#334155);
+}
+
+/* MOBILE */
+@media(max-width:900px){
+
+    .controls{
+        grid-template-columns:1fr;
+    }
+
+    .group-content{
+        grid-template-columns:1fr;
+    }
+
+    .header{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+
+    <div class="header-left">
+
+        <div class="logo">📊</div>
+
+        <div>
+            <h1>GMP MONITORING</h1>
+            <small>Hygiene Compliance Dashboard</small>
+        </div>
+
+    </div>
+
+</div>
+
+<div class="container">
+
+    <!-- KPI -->
+    <div class="kpis">
+
+        <div class="kpi">
+            <small>Total Reports</small>
+            <h2 id="totalReports">0</h2>
+        </div>
+
+        <div class="kpi">
+            <small>PASS Records</small>
+            <h2 id="passReports">0</h2>
+        </div>
+
+        <div class="kpi">
+            <small>FAIL Records</small>
+            <h2 id="failReports">0</h2>
+        </div>
+
+    </div>
+
+    <!-- CONTROLS -->
+    <div class="top-panel">
+
+        <div class="controls">
+
+            <select id="lineFilter" onchange="load()">
+                <option value="">📁 All Lines</option>
+            </select>
+
+            <input id="search"
+            placeholder="🔍 Search employee / line / date..."
+            oninput="load()">
+
+            <button class="export-btn" onclick="exportExcel()">
+                📤 Export
+            </button>
+
+            <button class="delete-btn" onclick="openPopup()">
+                🗑 Delete All
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- WARNINGS -->
+    <div class="warning-box">
+
+        <h3>⚠ Warning Monitoring</h3>
+
+        <div id="warningList">
+            No warnings yet
+        </div>
+
+    </div>
+
+    <!-- REPORTS -->
+    <div id="reports"></div>
+
+</div>
+
+<!-- DETAILS MODAL -->
+<div class="modal" id="modal">
+
+    <div class="modal-box">
+
+        <div id="modalContent"></div>
+
+        <button class="close-btn" onclick="closeModal()">
+            Close
+        </button>
+
+    </div>
+
+</div>
+
+<!-- DELETE MODAL -->
+<div class="modal" id="popup">
+
+    <div class="modal-box">
+
+        <h3>🔐 Admin Verification</h3>
+
+        <input type="password" id="pass"
+        placeholder="Enter admin password">
+
+        <br><br>
+
+        <button class="delete-btn" onclick="deleteAll()">
+            Confirm Delete
+        </button>
+
+        <button class="close-btn" onclick="closePopup()">
+            Cancel
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+
+const labels = [
+"Plain White/Violet Working Shirt",
+"Black/Violet Working Pants",
+"Arm Sleeve & White Apron",
+"Hairnet & Turban",
+"Facemask",
+"Socks & Shoes",
+"Proper Haircut",
+"Beard Clean",
+"Nails Clean",
+"No Makeup",
+"No Jewelry",
+"No Cuts",
+"No Illness"
+];
+
+function getData(){
+    let live = JSON.parse(localStorage.getItem("gmpData")) || [];
+    let sent = JSON.parse(localStorage.getItem("gmpSent")) || [];
+    return [...live, ...sent];
+}
+
+function getStatus(e){
+
+    if(e.compliedAt) return "PASS";
+
+    return Object.keys(e)
+    .filter(k=>k.startsWith("c"))
+    .some(k=>e[k]==="FAIL")
+    ? "FAIL"
+    : "PASS";
+}
+
+function getWarnings(data){
+
+    let map={};
+
+    data.forEach(e=>{
+
+        if(!map[e.name]) map[e.name]=[];
+
+        map[e.name].push({
+            date:e.date || "",
+            status:getStatus(e)
+        });
+
+    });
+
+    let warnings=[];
+
+    Object.keys(map).forEach(name=>{
+
+        let logs=map[name].sort((a,b)=>
+        new Date(b.date)-new Date(a.date));
+
+        let count=0;
+
+        for(let i=0;i<logs.length;i++){
+
+            if(logs[i].status==="FAIL") count++;
+            else count=0;
+
+            if(count>=3){
+                warnings.push(name);
+                break;
+            }
+        }
+
+    });
+
+    return warnings;
+}
+
+function fillLineOptions(){
+
+    let data=getData();
+
+    let lines=[
+        ...new Set(data.map(e=>e.line).filter(Boolean))
+    ];
+
+    let select=document.getElementById("lineFilter");
+
+    select.innerHTML=
+    `<option value="">📁 All Lines</option>`;
+
+    lines.forEach(l=>{
+        select.innerHTML+=`
+        <option value="${l}">
+            ${l}
+        </option>`;
+    });
+}
+
+function load(){
+
+    let data=getData();
+
+    /* KPI */
+    document.getElementById("totalReports").innerText =
+    data.length;
+
+    document.getElementById("passReports").innerText =
+    data.filter(x=>getStatus(x)==="PASS").length;
+
+    document.getElementById("failReports").innerText =
+    data.filter(x=>getStatus(x)==="FAIL").length;
+
+    /* WARNINGS */
+    let warnings=getWarnings(data);
+
+    document.getElementById("warningList").innerHTML=
+    warnings.length
+    ? warnings.map(w=>
+        `<div class="warning-item">
+            ⚠ ${w} - 3 Consecutive FAIL
+        </div>`
+    ).join("")
+    : "No warnings yet";
+
+    let keyword=
+    document.getElementById("search")
+    .value.toLowerCase();
+
+    let selectedLine=
+    document.getElementById("lineFilter")
+    .value;
+
+    let grouped={};
+
+    data.forEach(e=>{
+
+        if(selectedLine && e.line!==selectedLine)
+        return;
+
+        let match=
+        (e.name||"").toLowerCase().includes(keyword) ||
+        (e.line||"").toLowerCase().includes(keyword) ||
+        (e.date||"").includes(keyword);
+
+        if(!match) return;
+
+        let dateKey=e.date || "No Date";
+
+        if(!grouped[dateKey])
+        grouped[dateKey]=[];
+
+        grouped[dateKey].push(e);
+
+    });
+
+    let html="";
+
+    Object.keys(grouped).forEach(date=>{
+
+        html+=`
+        <div class="group">
+
+            <div class="group-header"
+            onclick="toggle(this)">
+
+                <b>📅 ${date}</b>
+
+                <span>
+                    ${grouped[date].length} Reports
+                </span>
+
+            </div>
+
+            <div class="group-content">`;
+
+        grouped[date].forEach(e=>{
+
+            let status=getStatus(e);
+
+            html+=`
+            <div class="card
+            ${status==='FAIL'
+            ?'card-fail'
+            :'card-pass'}">
+
+                <div class="card-top">
+
+                    <div class="employee">
+
+                        <div class="avatar">
+                            ${(e.name||"U")
+                            .charAt(0)
+                            .toUpperCase()}
+                        </div>
+
+                        <div>
+                            <b>${e.name}</b><br>
+                            <small>${e.line}</small>
+                        </div>
+
+                    </div>
+
+                    <div class="status
+                    ${status==='FAIL'
+                    ?'fail'
+                    :'pass'}">
+
+                        ${status}
+
+                    </div>
+
+                </div>
+
+                ${
+                    e.compliedAt
+                    ? `<div class="complied-tag">
+                        ✔ COMPLIED
+                       </div>`
+                    : ""
+                }
+
+                <div class="meta">
+
+                    👷 Inspector:
+                    ${e.inspector}<br>
+
+                    📅 Date:
+                    ${e.date}
+
+                </div>
+
+                <div class="card-actions">
+
+                    <button class="view-btn"
+                    onclick='viewDetails("${encodeURIComponent(JSON.stringify(e))}")'>
+
+                        👁 View Details
+
+                    </button>
+
+                </div>
+
+            </div>`;
+        });
+
+        html+=`</div></div>`;
+    });
+
+    document.getElementById("reports").innerHTML=
+    html || `
+    <div class="card">
+        No data found
+    </div>`;
+}
+
+function toggle(el){
+
+    let next=el.nextElementSibling;
+
+    next.style.display=
+    next.style.display==="none"
+    ? "grid"
+    : "none";
+}
+
+function viewDetails(encoded){
+
+    let e=
+    JSON.parse(decodeURIComponent(encoded));
+
+    let html=`
+    <h2>${e.name}</h2>
+
+    <div class="meta">
+
+        📁 ${e.line}<br>
+        📅 ${e.date}<br>
+        👷 ${e.inspector}
+
+    </div>
+
+    <br>
+
+    <h3>Checklist</h3>`;
+
+    labels.forEach((l,i)=>{
+
+        let val=e[`c${i+1}`];
+
+        html+=`
+        <div class="checklist-row
+        ${val==='FAIL'
+        ?'check-fail'
+        :'check-pass'}">
+
+            <span>${l}</span>
+
+            <b class="
+            ${val==='FAIL'
+            ?'fail'
+            :'pass'}">
+
+                ${val}
+
+            </b>
+
+        </div>`;
+    });
+
+    document.getElementById("modalContent")
+    .innerHTML=html;
+
+    document.getElementById("modal")
+    .style.display="flex";
+}
+
+function closeModal(){
+    document.getElementById("modal")
+    .style.display="none";
+}
+
+function openPopup(){
+    document.getElementById("popup")
+    .style.display="flex";
+}
+
+function closePopup(){
+
+    document.getElementById("popup")
+    .style.display="none";
+
+    document.getElementById("pass").value="";
+}
+
+function deleteAll(){
+
+    let pass=
+    document.getElementById("pass").value;
+
+    if(pass!=="1234"){
+        alert("Wrong password");
+        return;
+    }
+
+    localStorage.removeItem("gmpData");
+    localStorage.removeItem("gmpSent");
+
+    closePopup();
+
+    fillLineOptions();
+    load();
+}
+
+function exportExcel(){
+
+    let data=getData();
+
+    let rows=`<table border="1">
+    <tr>
+    <th>Name</th>
+    <th>Line</th>
+    <th>Date</th>
+    <th>Inspector</th>
+    <th>Status</th>
+    </tr>`;
+
+    data.forEach(e=>{
+
+        rows+=`
+        <tr>
+            <td>${e.name||""}</td>
+            <td>${e.line||""}</td>
+            <td>${e.date||""}</td>
+            <td>${e.inspector||""}</td>
+            <td>${getStatus(e)}</td>
+        </tr>`;
+    });
+
+    rows+="</table>";
+
+    let blob=new Blob([rows],{
+        type:"application/vnd.ms-excel"
+    });
+
+    let a=document.createElement("a");
+
+    a.href=URL.createObjectURL(blob);
+
+    a.download="GMP_REPORT.xls";
+
+    a.click();
+}
+
+window.onload=function(){
+
+    fillLineOptions();
+    load();
+
+};
+
+</script>
+
+</body>
+</html>

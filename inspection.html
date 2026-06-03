@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Production Line Inspection System</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+:root{
+    --bg1:#071426;
+    --bg2:#0f1f38;
+
+    --primary:#14b8a6;
+    --primary-dark:#0f766e;
+    --accent:#22c55e;
+
+    --card:rgba(255,255,255,0.95);
+    --border:#dbe4ee;
+
+    --text:#0f172a;
+    --muted:#64748b;
+
+    --success:#16a34a;
+    --danger:#dc2626;
+
+    --shadow:0 20px 50px rgba(0,0,0,0.18);
+}
+
+body{
+    background:
+    radial-gradient(circle at top left, rgba(20,184,166,0.22), transparent 25%),
+    radial-gradient(circle at bottom right, rgba(34,197,94,0.18), transparent 30%),
+    linear-gradient(135deg,var(--bg1),var(--bg2));
+
+    min-height:100vh;
+    padding:30px 15px 50px;
+    color:white;
+}
+
+.wrapper{
+    max-width:1300px;
+    margin:auto;
+}
+
+/* HEADER */
+
+.header{
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(14px);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:30px;
+    padding:35px;
+    margin-bottom:25px;
+    position:relative;
+    overflow:hidden;
+}
+
+.header::before{
+    content:'';
+    position:absolute;
+    width:260px;
+    height:260px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.08);
+    top:-120px;
+    right:-100px;
+}
+
+.header-content{
+    position:relative;
+    z-index:2;
+}
+
+.badge{
+    display:inline-block;
+    background:rgba(255,255,255,0.14);
+    padding:10px 18px;
+    border-radius:50px;
+    font-size:13px;
+    letter-spacing:1px;
+    margin-bottom:18px;
+}
+
+.header h1{
+    font-size:42px;
+    margin-bottom:12px;
+    font-weight:800;
+}
+
+.header p{
+    max-width:720px;
+    color:#dbeafe;
+    line-height:1.8;
+}
+
+/* CARD */
+
+.glass-card{
+    background:var(--card);
+    border-radius:28px;
+    padding:30px;
+    box-shadow:var(--shadow);
+    margin-bottom:25px;
+    color:var(--text);
+}
+
+.section-title{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-bottom:25px;
+}
+
+.section-icon{
+    width:48px;
+    height:48px;
+    border-radius:16px;
+    background:linear-gradient(135deg,var(--primary),var(--accent));
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:white;
+    font-size:22px;
+}
+
+.section-title h2{
+    font-size:24px;
+    color:var(--primary-dark);
+}
+
+/* FORM */
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:22px;
+}
+
+.input-group{
+    display:flex;
+    flex-direction:column;
+}
+
+.input-group label{
+    margin-bottom:10px;
+    font-size:14px;
+    font-weight:600;
+    color:#334155;
+}
+
+.input-group input,
+.input-group select{
+    padding:15px;
+    border-radius:16px;
+    border:1px solid var(--border);
+    background:#f8fafc;
+    font-size:15px;
+    color:var(--text);
+    outline:none;
+    transition:0.25s ease;
+}
+
+.input-group input:focus,
+.input-group select:focus{
+    border-color:var(--primary);
+    background:white;
+    box-shadow:0 0 0 4px rgba(20,184,166,0.14);
+}
+
+/* TABLE */
+
+.table-container{
+    overflow:auto;
+    border-radius:22px;
+    border:1px solid var(--border);
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:850px;
+}
+
+thead{
+    background:linear-gradient(90deg,var(--primary-dark),var(--primary));
+    color:white;
+}
+
+th{
+    padding:18px;
+    font-size:14px;
+    letter-spacing:0.5px;
+}
+
+td{
+    padding:18px;
+    border-bottom:1px solid #edf2f7;
+    text-align:center;
+}
+
+tbody tr:nth-child(even){
+    background:#f8fafc;
+}
+
+tbody tr:hover{
+    background:#ecfeff;
+}
+
+.item-name{
+    text-align:left;
+    font-weight:600;
+}
+
+.condition{
+    font-size:13px;
+    color:var(--muted);
+    text-align:left;
+    line-height:1.6;
+}
+
+table select,
+table input{
+    width:100%;
+    padding:12px;
+    border-radius:14px;
+    border:1px solid var(--border);
+    background:white;
+    outline:none;
+}
+
+/* BUTTON */
+
+.button-group{
+    margin-top:25px;
+    display:flex;
+    gap:15px;
+    flex-wrap:wrap;
+}
+
+.btn{
+    border:none;
+    padding:16px 28px;
+    border-radius:18px;
+    cursor:pointer;
+    font-size:15px;
+    font-weight:700;
+    transition:0.25s ease;
+    letter-spacing:0.3px;
+}
+
+.btn:hover{
+    transform:translateY(-3px);
+}
+
+.submit-btn{
+    background:linear-gradient(135deg,var(--primary),var(--accent));
+    color:white;
+    box-shadow:0 10px 25px rgba(20,184,166,0.35);
+}
+
+/* STATUS */
+
+.status-box{
+    margin-top:25px;
+    padding:22px;
+    border-radius:22px;
+    background:linear-gradient(135deg,#ecfeff,#f0fdf4);
+    border:2px solid rgba(20,184,166,0.16);
+}
+
+.status-box h3{
+    color:var(--primary-dark);
+    margin-bottom:10px;
+}
+
+.status-box p{
+    color:#334155;
+    line-height:1.7;
+}
+
+/* POPUP */
+
+.popup{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.55);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:999;
+}
+
+.popup-card{
+    width:90%;
+    max-width:420px;
+    background:white;
+    border-radius:28px;
+    padding:35px;
+    text-align:center;
+    color:var(--text);
+    animation:pop 0.3s ease;
+}
+
+@keyframes pop{
+    from{
+        opacity:0;
+        transform:scale(0.9);
+    }
+    to{
+        opacity:1;
+        transform:scale(1);
+    }
+}
+
+.popup-icon{
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    margin:auto;
+    margin-bottom:18px;
+    background:linear-gradient(135deg,var(--primary),var(--accent));
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:42px;
+    color:white;
+}
+
+.popup-card h2{
+    margin-bottom:10px;
+    color:var(--primary-dark);
+}
+
+.popup-card p{
+    color:var(--muted);
+    line-height:1.7;
+    margin-bottom:20px;
+}
+
+.close-btn{
+    background:linear-gradient(135deg,var(--primary),var(--accent));
+    color:white;
+    border:none;
+    padding:14px 26px;
+    border-radius:16px;
+    cursor:pointer;
+    font-weight:700;
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+.header h1{
+    font-size:32px;
+}
+
+.glass-card{
+    padding:22px;
+}
+
+.button-group{
+    flex-direction:column;
+}
+
+.btn{
+    width:100%;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+    <!-- HEADER -->
+    <div class="header">
+
+        <div class="header-content">
+
+            <div class="badge">
+                QA MONITORING SYSTEM
+            </div>
+
+            <h1>🏭 Production Line Inspection</h1>
+
+            <p>
+                Digital inspection and monitoring system for production line
+                sanitation, compliance verification, and operational quality assurance.
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- HEADER FORM -->
+    <div class="glass-card">
+
+        <div class="section-title">
+            <div class="section-icon">📋</div>
+            <h2>Inspection Information</h2>
+        </div>
+
+        <div class="form-grid">
+
+            <div class="input-group">
+                <label>Date</label>
+                <input id="date" type="date">
+            </div>
+
+            <div class="input-group">
+                <label>Production Area</label>
+                <select id="area">
+                    <option value="">Select Area</option>
+                    <option>Bakery Production</option>
+                    <option>Cake Production</option>
+                    <option>Icing Area</option>
+                    <option>Packaging</option>
+                    <option>Cold Storage</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>Inspection Stage</label>
+                <select id="stage">
+                    <option>Pre-Operation</option>
+                    <option>Mid-Operation</option>
+                    <option>Post-Operation</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>Inspector</label>
+                <select id="inspector">
+                    <option value="">Select Inspector</option>
+                    <option>D. Resuello</option>
+                    <option>A. Dotton</option>
+                    <option>M. Agana</option>
+                    <option>A. Tampoya</option>
+                    <option>R. Arquero</option>
+                </select>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- CHECKLIST -->
+    <div class="glass-card">
+
+        <div class="section-title">
+            <div class="section-icon">🧾</div>
+            <h2>Inspection Checklist</h2>
+        </div>
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Inspection Item</th>
+                        <th>Condition Standard</th>
+                        <th>Status / Reading</th>
+                    </tr>
+                </thead>
+
+                <tbody id="checklistBody"></tbody>
+
+            </table>
+
+        </div>
+
+        <div class="status-box">
+            <h3>Inspection Guidelines</h3>
+            <p>
+                Ensure all production areas comply with sanitation,
+                food safety, and GMP operational standards before submission.
+            </p>
+        </div>
+
+        <div class="button-group">
+            <button class="btn submit-btn" onclick="submitInspection()">
+                📤 Submit Inspection
+            </button>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- POPUP -->
+<div class="popup" id="popup">
+
+    <div class="popup-card">
+
+        <div class="popup-icon">✅</div>
+
+        <h2>Inspection Submitted</h2>
+
+        <p>
+            Production inspection has been successfully sent to the admin monitoring system.
+        </p>
+
+        <button class="close-btn" onclick="closePopup()">
+            Close
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+
+const items = [
+"Area Temperature",
+"Tables & Shelves",
+"Measuring Equipment",
+"Mixer Units",
+"Product Ingredients",
+"Dirty pans & buckets",
+"Floor",
+"Walls",
+"Ceilings",
+"Sink",
+"Grease Trap",
+"Drainage",
+"Garbage Bins"
+];
+
+/* =========================
+   AUTO DATE
+========================= */
+
+document.getElementById("date").value =
+new Date().toISOString().split("T")[0];
+
+/* =========================
+   GET LOGGED IN USER
+========================= */
+
+const loggedUser =
+localStorage.getItem("fullname") ||
+localStorage.getItem("username") ||
+"Unknown User";
+
+const loggedRole =
+localStorage.getItem("role") || "QA User";
+
+/* =========================
+   AUTO SET INSPECTOR
+========================= */
+
+window.onload = () => {
+
+    renderChecklist();
+
+    const inspector =
+    document.getElementById("inspector");
+
+    inspector.innerHTML = `
+        <option value="${loggedUser}" selected>
+            ${loggedUser}
+        </option>
+    `;
+
+};
+
+/* =========================
+   POPUP
+========================= */
+
+function showPopup(){
+    document.getElementById("popup").style.display = "flex";
+}
+
+function closePopup(){
+    document.getElementById("popup").style.display = "none";
+}
+
+/* =========================
+   RENDER CHECKLIST
+========================= */
+
+function renderChecklist(){
+
+    const body =
+    document.getElementById("checklistBody");
+
+    body.innerHTML =
+    items.map((i,idx)=>{
+
+        let conditionText = "";
+
+        if(i === "Area Temperature"){
+            conditionText =
+            "Must be 18°C - 30°C (Food Safety Standard)";
+        }
+        else if(i === "Tables & Shelves"){
+            conditionText =
+            "Clean, dry, no contamination";
+        }
+        else if(i === "Measuring Equipment"){
+            conditionText =
+            "Calibrated and clean before use";
+        }
+        else if(i === "Mixer Units"){
+            conditionText =
+            "Free from residue";
+        }
+        else if(i === "Product Ingredients"){
+            conditionText =
+            "Proper labeling & within expiry date";
+        }
+        else if(i === "Dirty pans & buckets"){
+            conditionText =
+            "Washed and sanitized";
+        }
+        else if(i === "Floor"){
+            conditionText =
+            "Dry, no debris";
+        }
+        else if(i === "Walls"){
+            conditionText =
+            "No stains or mold";
+        }
+        else if(i === "Ceilings"){
+            conditionText =
+            "No dust or debris";
+        }
+        else if(i === "Sink"){
+            conditionText =
+            "Clean water flow";
+        }
+        else if(i === "Grease Trap"){
+            conditionText =
+            "Properly maintained";
+        }
+        else if(i === "Drainage"){
+            conditionText =
+            "No blockage";
+        }
+        else if(i === "Garbage Bins"){
+            conditionText =
+            "Covered and emptied regularly";
+        }
+
+        /* TEMPERATURE */
+
+        if(i === "Area Temperature"){
+
+            return `
+            <tr>
+
+                <td class="item-name">
+                    ${i}
+                </td>
+
+                <td class="condition">
+                    ${conditionText}
+                </td>
+
+                <td>
+                    <input
+                    type="number"
+                    id="temp"
+                    placeholder="Enter °C">
+                </td>
+
+            </tr>`;
+        }
+
+        /* NORMAL CHECKLIST */
+
+        return `
+        <tr>
+
+            <td class="item-name">
+                ${i}
+            </td>
+
+            <td class="condition">
+                ${conditionText}
+            </td>
+
+            <td>
+                <select id="c${idx}">
+                    <option>PASS</option>
+                    <option>FAIL</option>
+                    <option>N/A</option>
+                </select>
+            </td>
+
+        </tr>`;
+
+    }).join("");
+
+}
+
+/* =========================
+   GET FINAL STATUS
+========================= */
+
+function getStatus(){
+
+    let fail = 0;
+
+    let tempEl =
+    document.getElementById("temp");
+
+    let temp =
+    tempEl ? Number(tempEl.value) : NaN;
+
+    if(isNaN(temp) || temp < 18 || temp > 30){
+        fail++;
+    }
+
+    let idx = 0;
+
+    for(let i=0;i<items.length;i++){
+
+        if(items[i] === "Area Temperature"){
+            continue;
+        }
+
+        let el =
+        document.getElementById("c"+idx);
+
+        if(!el || el.value === "FAIL"){
+            fail++;
+        }
+
+        idx++;
+    }
+
+    return fail === 0
+    ? "PASS"
+    : "FAIL";
+}
+
+/* =========================
+   SUBMIT INSPECTION
+========================= */
+
+function submitInspection(){
+
+    let dateVal =
+    document.getElementById("date").value;
+
+    let areaVal =
+    document.getElementById("area").value;
+
+    let stageVal =
+    document.getElementById("stage").value;
+
+    /* AUTO USER */
+    let inspectorVal = loggedUser;
+
+    let tempEl =
+    document.getElementById("temp");
+
+    let tempVal =
+    tempEl ? tempEl.value : "";
+
+    if(
+        !dateVal ||
+        !areaVal ||
+        !stageVal ||
+        tempVal === ""
+    ){
+
+        alert("Please complete all fields");
+        return;
+    }
+
+    /* STORAGE */
+
+    let data =
+    JSON.parse(
+        localStorage.getItem(
+            "production_inspection"
+        )
+    ) || [];
+
+    let checklist = [];
+    let idx = 0;
+
+    items.forEach(i=>{
+
+        if(i === "Area Temperature"){
+
+            checklist.push({
+
+                item:i,
+
+                result:
+                tempVal + "°C"
+
+            });
+
+        }else{
+
+            let el =
+            document.getElementById("c"+idx);
+
+            checklist.push({
+
+                item:i,
+
+                result:
+                el ? el.value : "PASS"
+
+            });
+
+            idx++;
+        }
+
+    });
+
+    /* RECORD */
+
+    let record = {
+
+        id:Date.now(),
+
+        reportNo:
+        "QA-" +
+        Math.floor(
+            100000 + Math.random()*900000
+        ),
+
+        submittedBy:loggedUser,
+
+        role:loggedRole,
+
+        date:dateVal,
+
+        area:areaVal,
+
+        stage:stageVal,
+
+        inspector:inspectorVal,
+
+        line:
+        areaVal.includes("Bakery")
+        ? "Bakery"
+        : areaVal.includes("Cake")
+        ? "Baseline"
+        : "Packaging",
+
+        status:getStatus(),
+
+        checklist:checklist,
+
+        createdAt:
+        new Date().toLocaleString()
+
+    };
+
+    /* SAVE MAIN */
+
+    data.push(record);
+
+    localStorage.setItem(
+        "production_inspection",
+        JSON.stringify(data)
+    );
+
+    /* SEND TO ADMIN */
+
+    let admin =
+    JSON.parse(
+        localStorage.getItem(
+            "admin_inspections"
+        )
+    ) || [];
+
+    admin.push(record);
+
+    localStorage.setItem(
+        "admin_inspections",
+        JSON.stringify(admin)
+    );
+
+    /* SUCCESS */
+
+    showPopup();
+
+    console.log(
+        "Submitted by:",
+        loggedUser
+    );
+
+    setTimeout(()=>{
+
+        closePopup();
+
+    },2000);
+
+}
+
+</script>
+
+</body>
+</html>

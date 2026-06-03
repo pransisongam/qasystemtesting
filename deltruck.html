@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Delivery Truck Monitoring System</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+:root{
+    --bg1:#071426;
+    --bg2:#0f1f38;
+
+    --primary:#14b8a6;
+    --primary-dark:#0f766e;
+    --accent:#22c55e;
+
+    --card:rgba(255,255,255,0.95);
+    --border:#dbe4ee;
+
+    --text:#0f172a;
+    --muted:#64748b;
+
+    --success:#16a34a;
+    --danger:#dc2626;
+    --warning:#f59e0b;
+    --info:#2563eb;
+
+    --shadow:0 20px 50px rgba(0,0,0,0.18);
+}
+
+body{
+    background:
+    radial-gradient(circle at top left, rgba(20,184,166,0.22), transparent 25%),
+    radial-gradient(circle at bottom right, rgba(34,197,94,0.18), transparent 30%),
+    linear-gradient(135deg,var(--bg1),var(--bg2));
+
+    min-height:100vh;
+    padding:30px 15px 50px;
+    color:white;
+}
+
+/* HEADER */
+
+.header{
+    max-width:1400px;
+    margin:auto;
+    margin-bottom:25px;
+
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(14px);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:30px;
+    padding:35px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+    flex-wrap:wrap;
+
+    position:relative;
+    overflow:hidden;
+}
+
+.header::before{
+    content:'';
+    position:absolute;
+    width:260px;
+    height:260px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.08);
+    top:-120px;
+    right:-100px;
+}
+
+.title{
+    position:relative;
+    z-index:2;
+}
+
+.title h1{
+    margin:0;
+    font-size:42px;
+    font-weight:800;
+}
+
+.title p{
+    margin-top:10px;
+    color:#dbeafe;
+    line-height:1.8;
+}
+
+.live{
+    position:relative;
+    z-index:2;
+
+    background:rgba(255,255,255,0.14);
+    padding:12px 20px;
+    border-radius:50px;
+    font-size:13px;
+    letter-spacing:1px;
+    font-weight:700;
+}
+
+/* KPI */
+
+.kpi{
+    max-width:1400px;
+    margin:25px auto;
+
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:20px;
+}
+
+.kpi-card{
+    background:var(--card);
+    border-radius:28px;
+    padding:28px;
+    box-shadow:var(--shadow);
+    color:var(--text);
+}
+
+.kpi-card h2{
+    font-size:42px;
+    font-weight:800;
+    margin-bottom:10px;
+    color:var(--primary-dark);
+}
+
+.kpi-card p{
+    color:var(--muted);
+    font-size:14px;
+}
+
+/* MAIN */
+
+.container{
+    max-width:1400px;
+    margin:auto;
+
+    display:grid;
+    grid-template-columns:380px 1fr;
+    gap:25px;
+}
+
+@media(max-width:1100px){
+    .container{
+        grid-template-columns:1fr;
+    }
+}
+
+/* PANEL */
+
+.panel{
+    background:var(--card);
+    border-radius:28px;
+    padding:28px;
+    box-shadow:var(--shadow);
+    color:var(--text);
+}
+
+.panel h3{
+    margin-top:0;
+    margin-bottom:24px;
+    color:var(--primary-dark);
+    font-size:24px;
+}
+
+/* FORM */
+
+.input-group{
+    margin-bottom:20px;
+}
+
+label{
+    display:block;
+    margin-bottom:10px;
+    font-size:14px;
+    font-weight:600;
+    color:#334155;
+}
+
+input,
+select{
+    width:100%;
+    padding:15px;
+    border-radius:16px;
+    border:1px solid var(--border);
+    background:#f8fafc;
+    font-size:15px;
+    color:var(--text);
+    outline:none;
+    transition:0.25s ease;
+}
+
+input:focus,
+select:focus{
+    border-color:var(--primary);
+    background:white;
+    box-shadow:0 0 0 4px rgba(20,184,166,0.14);
+}
+
+option{
+    color:black;
+}
+
+button{
+    border:none;
+    cursor:pointer;
+    transition:0.25s ease;
+}
+
+.add-btn{
+    width:100%;
+    padding:16px;
+    border-radius:18px;
+    background:linear-gradient(135deg,var(--primary),var(--accent));
+    color:white;
+    font-weight:700;
+    font-size:15px;
+    margin-top:10px;
+    box-shadow:0 10px 25px rgba(20,184,166,0.35);
+}
+
+.add-btn:hover{
+    transform:translateY(-3px);
+}
+
+/* DASHBOARD */
+
+.dashboard-title{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:22px;
+    flex-wrap:wrap;
+    gap:12px;
+}
+
+.search{
+    width:280px;
+}
+
+.search input{
+    background:#f8fafc;
+}
+
+/* DELIVERY CARD */
+
+.row-card{
+    background:#f8fafc;
+    border:1px solid #e2e8f0;
+    border-radius:24px;
+    padding:24px;
+    margin-bottom:18px;
+}
+
+.row-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:12px;
+}
+
+.row-top h2{
+    margin:0;
+    font-size:24px;
+    color:var(--text);
+}
+
+.badge{
+    padding:10px 16px;
+    border-radius:50px;
+    color:white;
+    font-size:12px;
+    font-weight:800;
+}
+
+.loading{
+    background:var(--warning);
+}
+
+.out{
+    background:var(--info);
+}
+
+.delivered{
+    background:var(--success);
+}
+
+.delayed{
+    background:var(--danger);
+}
+
+.meta{
+    margin-top:18px;
+
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:14px;
+}
+
+.meta-box{
+    background:white;
+    border-radius:16px;
+    padding:14px;
+    border:1px solid #edf2f7;
+}
+
+.meta-box small{
+    color:var(--muted);
+    display:block;
+    margin-bottom:6px;
+    font-size:12px;
+}
+
+.history{
+    margin-top:20px;
+    background:white;
+    border-radius:18px;
+    padding:18px;
+    max-height:150px;
+    overflow:auto;
+    font-size:13px;
+    line-height:1.8;
+    border:1px solid #edf2f7;
+}
+
+.update-box{
+    margin-top:20px;
+
+    display:grid;
+    grid-template-columns:1fr 1fr auto auto;
+    gap:12px;
+}
+
+@media(max-width:850px){
+    .update-box{
+        grid-template-columns:1fr;
+    }
+}
+
+.update-btn{
+    padding:15px 18px;
+    border-radius:16px;
+    background:#2563eb;
+    color:white;
+    font-weight:700;
+}
+
+.submit-btn{
+    padding:15px 18px;
+    border-radius:16px;
+    background:linear-gradient(135deg,var(--primary),var(--accent));
+    color:white;
+    font-weight:700;
+}
+
+.update-btn:hover,
+.submit-btn:hover{
+    transform:translateY(-3px);
+}
+
+/* POPUP */
+
+.popup{
+    position:fixed;
+    inset:0;
+    display:none;
+    justify-content:center;
+    align-items:center;
+    background:rgba(0,0,0,0.6);
+    z-index:999;
+}
+
+.popup-content{
+    width:90%;
+    max-width:380px;
+
+    background:white;
+    color:var(--text);
+
+    border-radius:30px;
+    padding:35px;
+    text-align:center;
+
+    animation:pop 0.3s ease;
+}
+
+@keyframes pop{
+    from{
+        transform:scale(0.9);
+        opacity:0;
+    }
+    to{
+        transform:scale(1);
+        opacity:1;
+    }
+}
+
+.popup-content h2{
+    color:var(--success);
+    margin-bottom:12px;
+}
+
+.popup-content p{
+    color:var(--muted);
+    line-height:1.7;
+    margin-bottom:20px;
+}
+
+.popup-content button{
+    width:100%;
+    padding:15px;
+    border-radius:16px;
+    background:linear-gradient(135deg,var(--primary),var(--accent));
+    color:white;
+    font-weight:700;
+}
+
+.empty{
+    text-align:center;
+    padding:60px 20px;
+    color:var(--muted);
+    font-size:15px;
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+.header{
+    padding:28px;
+}
+
+.title h1{
+    font-size:32px;
+}
+
+.kpi-card h2{
+    font-size:34px;
+}
+
+.panel{
+    padding:22px;
+}
+
+.search{
+    width:100%;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+
+    <div class="title">
+        <h1>🚚 Delivery Truck Monitoring</h1>
+        <p>Real-time logistics & cold chain monitoring dashboard</p>
+    </div>
+
+    <div class="live">
+        ● LIVE SYSTEM
+    </div>
+
+</div>
+
+<!-- KPI -->
+
+<div class="kpi">
+
+    <div class="kpi-card">
+        <h2 id="total">0</h2>
+        <p>Total Trucks</p>
+    </div>
+
+    <div class="kpi-card">
+        <h2 id="loading">0</h2>
+        <p>Currently Loading</p>
+    </div>
+
+    <div class="kpi-card">
+        <h2 id="outForDelivery">0</h2>
+        <p>Out for Delivery</p>
+    </div>
+
+</div>
+
+<!-- MAIN -->
+
+<div class="container">
+
+    <!-- LEFT -->
+
+    <div class="panel">
+
+        <h3>➕ Add Delivery Truck</h3>
+
+        <div class="input-group">
+            <label>Truck Number</label>
+            <input id="truck" placeholder="Enter truck no">
+        </div>
+
+        <div class="input-group">
+            <label>Driver Name</label>
+            <input id="driver" placeholder="Enter driver">
+        </div>
+
+        <div class="input-group">
+            <label>Checker Name</label>
+            <input id="checker" placeholder="Enter checker">
+        </div>
+
+        <div class="input-group">
+            <label>Destination Route</label>
+            <select id="destination">
+                <option>Route 1</option>
+                <option>Route 2</option>
+                <option>Route 3</option>
+                <option>Route 4</option>
+                <option>Route 5</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label>Status</label>
+            <select id="status">
+                <option>Loading</option>
+                <option>Out for Delivery</option>
+                <option>Delivered</option>
+                <option>Delayed</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label>Temperature °C</label>
+            <input id="temp" type="number" placeholder="0">
+        </div>
+
+        <div class="input-group">
+            <label>Inspector</label>
+            <input id="inspector" placeholder="Enter inspector">
+        </div>
+
+        <button class="add-btn" onclick="add()">
+            ➕ Add Delivery
+        </button>
+
+    </div>
+
+    <!-- RIGHT -->
+
+    <div class="panel">
+
+        <div class="dashboard-title">
+            <h3>📦 Delivery Dashboard</h3>
+
+            <div class="search">
+                <input id="search" placeholder="Search truck or driver..." onkeyup="load()">
+            </div>
+        </div>
+
+        <div id="cards"></div>
+
+    </div>
+
+</div>
+
+<!-- POPUP -->
+
+<div class="popup" id="popup">
+
+    <div class="popup-content">
+
+        <h2>✅ Success</h2>
+
+        <p>Report submitted successfully</p>
+
+        <button onclick="closePopup()">OK</button>
+
+    </div>
+
+</div>
+
+<script>
+
+function val(id){
+    return document.getElementById(id).value;
+}
+
+/* ADD */
+
+function add(){
+
+    if(
+        !val("truck") ||
+        !val("driver") ||
+        !val("checker") ||
+        !val("temp") ||
+        !val("inspector")
+    ){
+        alert("Please complete all fields");
+        return;
+    }
+
+    let data = JSON.parse(localStorage.getItem("truckData")) || [];
+
+    let now = new Date().toISOString();
+
+    let record = {
+        id: Date.now(),
+        truck: val("truck"),
+        driver: val("driver"),
+        checker: val("checker"),
+        destination: val("destination"),
+        status: val("status"),
+        temp: val("temp"),
+        inspector: val("inspector"),
+        statusTime: now,
+        history:[{
+            status: val("status"),
+            temp: val("temp"),
+            time: now
+        }]
+    };
+
+    data.push(record);
+
+    localStorage.setItem("truckData",JSON.stringify(data));
+
+    load();
+}
+
+/* UPDATE */
+
+function applyUpdate(id){
+
+    let data = JSON.parse(localStorage.getItem("truckData")) || [];
+
+    let newStatus = document.getElementById(`status-${id}`).value;
+    let newTemp = document.getElementById(`temp-${id}`).value;
+
+    let now = new Date().toISOString();
+
+    data = data.map(r=>{
+
+        if(r.id===id){
+
+            r.status = newStatus;
+
+            if(newTemp){
+                r.temp = newTemp;
+            }
+
+            r.statusTime = now;
+
+            r.history.push({
+                status:newStatus,
+                temp:newTemp || r.temp,
+                time:now
+            });
+        }
+
+        return r;
+    });
+
+    localStorage.setItem("truckData",JSON.stringify(data));
+
+    load();
+}
+
+/* SUBMIT */
+
+function submitReport(id){
+
+    let data = JSON.parse(localStorage.getItem("truckData")) || [];
+
+    let record = data.find(r=>r.id===id);
+
+    if(!record) return;
+
+    let admin = JSON.parse(localStorage.getItem("adminTruckReports")) || [];
+
+    admin.push({
+        id:Date.now(),
+        sentAt:new Date().toISOString(),
+        sentBy:record.inspector,
+        record:record
+    });
+
+    localStorage.setItem("adminTruckReports",JSON.stringify(admin));
+
+    data = data.filter(r=>r.id!==id);
+
+    localStorage.setItem("truckData",JSON.stringify(data));
+
+    document.getElementById("popup").style.display="flex";
+
+    load();
+}
+
+function closePopup(){
+    document.getElementById("popup").style.display="none";
+}
+
+/* BADGE */
+
+function getBadge(status){
+
+    if(status==="Loading"){
+        return "loading";
+    }
+
+    if(status==="Out for Delivery"){
+        return "out";
+    }
+
+    if(status==="Delivered"){
+        return "delivered";
+    }
+
+    return "delayed";
+}
+
+/* LOAD */
+
+function load(){
+
+    let data = JSON.parse(localStorage.getItem("truckData")) || [];
+
+    let keyword = val("search").toLowerCase();
+
+    data = data.filter(r =>
+        (r.truck || "").toLowerCase().includes(keyword) ||
+        (r.driver || "").toLowerCase().includes(keyword)
+    );
+
+    let total = 0;
+    let loading = 0;
+    let outForDelivery = 0;
+
+    let html = "";
+
+    data.forEach(r=>{
+
+        total++;
+
+        if(r.status==="Loading") loading++;
+        if(r.status==="Out for Delivery") outForDelivery++;
+
+        let history = (r.history || [])
+        .map(h=>`
+            ➜ <b>${h.status}</b>
+            | ${h.temp}°C
+            | ${new Date(h.time).toLocaleString()}
+        `).join("<br>");
+
+        html += `
+
+        <div class="row-card">
+
+            <div class="row-top">
+
+                <h2>🚛 ${r.truck}</h2>
+
+                <div class="badge ${getBadge(r.status)}">
+                    ${r.status}
+                </div>
+
+            </div>
+
+            <div class="meta">
+
+                <div class="meta-box">
+                    <small>Driver</small>
+                    <b>${r.driver}</b>
+                </div>
+
+                <div class="meta-box">
+                    <small>Checker</small>
+                    <b>${r.checker}</b>
+                </div>
+
+                <div class="meta-box">
+                    <small>Destination</small>
+                    <b>${r.destination}</b>
+                </div>
+
+                <div class="meta-box">
+                    <small>Temperature</small>
+                    <b>${r.temp}°C</b>
+                </div>
+
+                <div class="meta-box">
+                    <small>Inspector</small>
+                    <b>${r.inspector}</b>
+                </div>
+
+                <div class="meta-box">
+                    <small>Status Updated</small>
+                    <b>${new Date(r.statusTime).toLocaleString()}</b>
+                </div>
+
+            </div>
+
+            <div class="history">
+                <b>📜 Status History</b><br><br>
+                ${history}
+            </div>
+
+            <div class="update-box">
+
+                <select id="status-${r.id}">
+                    <option>Loading</option>
+                    <option>Out for Delivery</option>
+                    <option>Delivered</option>
+                    <option>Delayed</option>
+                </select>
+
+                <input id="temp-${r.id}" placeholder="Temperature °C">
+
+                <button class="update-btn" onclick="applyUpdate(${r.id})">
+                    🔄 Update
+                </button>
+
+                <button class="submit-btn" onclick="submitReport(${r.id})">
+                    📤 Submit
+                </button>
+
+            </div>
+
+        </div>
+        `;
+    });
+
+    document.getElementById("cards").innerHTML =
+    html || `<div class="empty">No active delivery records</div>`;
+
+    document.getElementById("total").innerText = total;
+    document.getElementById("loading").innerText = loading;
+    document.getElementById("outForDelivery").innerText = outForDelivery;
+}
+
+window.onload = load;
+
+</script>
+
+</body>
+</html>

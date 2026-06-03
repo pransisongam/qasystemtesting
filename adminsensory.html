@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Admin Sensory Analytics Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+:root{
+    --bg:#071018;
+    --bg2:#0b1724;
+
+    --card:rgba(255,255,255,0.08);
+    --border:rgba(255,255,255,0.12);
+
+    --text:#f1f5f9;
+    --muted:#94a3b8;
+
+    --primary:#22c55e;
+    --primary2:#16a34a;
+
+    --danger:#ef4444;
+    --dark:#1e293b;
+
+    --shadow:0 20px 45px rgba(0,0,0,0.45);
+}
+
+/* BODY */
+body{
+    margin:0;
+    font-family:Segoe UI, Arial;
+    background:
+        radial-gradient(circle at top left, rgba(34,197,94,0.15), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(59,130,246,0.12), transparent 35%),
+        linear-gradient(135deg,var(--bg),var(--bg2));
+    color:var(--text);
+    min-height:100vh;
+}
+
+/* HEADER */
+.header{
+    padding:22px 30px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:rgba(255,255,255,0.05);
+    backdrop-filter:blur(16px);
+    border-bottom:1px solid var(--border);
+    position:sticky;
+    top:0;
+    z-index:100;
+}
+
+.header h1{
+    margin:0;
+    font-size:24px;
+    letter-spacing:1px;
+}
+
+.header small{
+    color:var(--muted);
+}
+
+.backBtn{
+    background:linear-gradient(135deg,#334155,#0f172a);
+    color:white;
+    border:none;
+    padding:12px 18px;
+    border-radius:12px;
+    cursor:pointer;
+    font-weight:600;
+}
+
+/* MAIN */
+.container{
+    max-width:1300px;
+    margin:auto;
+    padding:25px;
+}
+
+/* KPI */
+.kpi-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:18px;
+    margin-bottom:24px;
+}
+
+.kpi{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:20px;
+    backdrop-filter:blur(18px);
+    box-shadow:var(--shadow);
+}
+
+.kpi .icon{
+    font-size:30px;
+    margin-bottom:10px;
+}
+
+.kpi h2{
+    margin:0;
+    font-size:28px;
+}
+
+.kpi p{
+    margin-top:6px;
+    color:var(--muted);
+    font-size:13px;
+}
+
+/* TOOLBAR */
+.toolbar{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+    margin-bottom:20px;
+}
+
+.search{
+    flex:1;
+    min-width:250px;
+    position:relative;
+}
+
+.search input{
+    width:100%;
+    padding:14px 16px;
+    border-radius:14px;
+    border:1px solid var(--border);
+    background:rgba(255,255,255,0.06);
+    color:white;
+    outline:none;
+    font-size:14px;
+}
+
+.search input::placeholder{
+    color:#94a3b8;
+}
+
+.btn{
+    border:none;
+    border-radius:14px;
+    padding:13px 18px;
+    font-weight:700;
+    cursor:pointer;
+    transition:0.25s;
+}
+
+.btn:hover{
+    transform:translateY(-2px);
+}
+
+.export{
+    background:linear-gradient(135deg,#16a34a,#22c55e);
+    color:white;
+}
+
+.clear{
+    background:linear-gradient(135deg,#dc2626,#ef4444);
+    color:white;
+}
+
+/* GRID */
+.dashboard{
+    display:grid;
+    grid-template-columns:1fr 420px;
+    gap:20px;
+}
+
+@media(max-width:1000px){
+    .dashboard{
+        grid-template-columns:1fr;
+    }
+}
+
+/* RECORD PANEL */
+.panel{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:24px;
+    padding:20px;
+    backdrop-filter:blur(16px);
+    box-shadow:var(--shadow);
+}
+
+.panel h3{
+    margin-top:0;
+}
+
+/* RECORD CARD */
+.record{
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:18px;
+    padding:16px;
+    margin-bottom:14px;
+    transition:0.25s;
+    cursor:pointer;
+}
+
+.record:hover{
+    transform:translateY(-4px);
+    border-color:#22c55e;
+    box-shadow:0 12px 25px rgba(34,197,94,0.18);
+}
+
+.top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+}
+
+.product{
+    font-size:15px;
+    font-weight:700;
+}
+
+.panelist{
+    color:var(--muted);
+    font-size:13px;
+    margin-top:4px;
+}
+
+.score{
+    background:rgba(34,197,94,0.18);
+    color:#4ade80;
+    padding:6px 12px;
+    border-radius:999px;
+    font-size:13px;
+    font-weight:700;
+}
+
+.meta{
+    display:flex;
+    justify-content:space-between;
+    margin-top:14px;
+    font-size:13px;
+    color:#cbd5e1;
+}
+
+/* CHART */
+.chart-wrap{
+    background:rgba(255,255,255,0.04);
+    border-radius:18px;
+    padding:14px;
+}
+
+/* MODALS */
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.7);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:999;
+}
+
+.modal-box{
+    width:92%;
+    max-width:520px;
+    background:#0f172a;
+    border:1px solid var(--border);
+    border-radius:22px;
+    padding:24px;
+    color:white;
+    box-shadow:var(--shadow);
+}
+
+.modal-box h2{
+    margin-top:0;
+}
+
+.detail{
+    display:flex;
+    justify-content:space-between;
+    padding:10px 0;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.modal-box input{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:12px;
+    background:#1e293b;
+    color:white;
+    margin-top:10px;
+    outline:none;
+}
+
+.modal-buttons{
+    display:flex;
+    gap:10px;
+    margin-top:18px;
+}
+
+.modal-buttons button{
+    flex:1;
+}
+
+/* EMPTY */
+.empty{
+    text-align:center;
+    padding:40px;
+    color:var(--muted);
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <div>
+        <h1>📊 QA Sensory Analytics</h1>
+        <small>Product Evaluation Monitoring Dashboard</small>
+    </div>
+
+    <button class="backBtn" onclick="goBack()">⬅ Back</button>
+</div>
+
+<div class="container">
+
+    <!-- KPI -->
+    <div class="kpi-grid">
+
+        <div class="kpi">
+            <div class="icon">🧾</div>
+            <h2 id="totalEval">0</h2>
+            <p>Total Evaluations</p>
+        </div>
+
+        <div class="kpi">
+            <div class="icon">⭐</div>
+            <h2 id="avgScore">0</h2>
+            <p>Average Product Score</p>
+        </div>
+
+        <div class="kpi">
+            <div class="icon">🍰</div>
+            <h2 id="products">0</h2>
+            <p>Products Evaluated</p>
+        </div>
+
+    </div>
+
+    <!-- TOOLBAR -->
+    <div class="toolbar">
+
+        <div class="search">
+            <input id="search" placeholder="Search product or panelist..." oninput="render()">
+        </div>
+
+        <button class="btn export" onclick="exportCSV()">⬇ Export CSV</button>
+
+        <button class="btn clear" onclick="clearData()">🗑 Clear Data</button>
+
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="dashboard">
+
+        <!-- RECORDS -->
+        <div class="panel">
+            <h3>📋 Evaluation Records</h3>
+            <div id="list"></div>
+        </div>
+
+        <!-- CHART -->
+        <div class="panel">
+            <h3>📈 Product Analytics</h3>
+
+            <div class="chart-wrap">
+                <canvas id="chart"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- VIEW MODAL -->
+<div class="modal" id="modal">
+
+    <div class="modal-box" id="modalContent"></div>
+
+</div>
+
+<!-- PASSWORD MODAL -->
+<div class="modal" id="pwModal">
+
+    <div class="modal-box">
+
+        <h2>🔐 Admin Verification</h2>
+
+        <input type="password" id="adminPass" placeholder="Enter admin password">
+
+        <div class="modal-buttons">
+            <button class="btn clear" onclick="confirmClear()">Confirm</button>
+            <button class="btn" onclick="closePwModal()">Cancel</button>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+let data = [];
+let chart;
+
+const ADMIN_PASSWORD = "1234";
+
+/* LOAD */
+function load(){
+    data = JSON.parse(localStorage.getItem("evaluations_db")) || [];
+    render();
+}
+
+/* SCORE */
+function getPercent(avg){
+    return ((avg / 5) * 100).toFixed(1);
+}
+
+/* FILTER */
+function getFiltered(){
+
+    let key =
+    document.getElementById("search").value.toLowerCase();
+
+    return data.filter(x =>
+        (x.product || "").toLowerCase().includes(key) ||
+        (x.panelist || "").toLowerCase().includes(key)
+    );
+}
+
+/* KPI */
+function updateKPI(list){
+
+    document.getElementById("totalEval").innerText =
+    list.length;
+
+    let avg = 0;
+
+    if(list.length){
+        avg =
+        list.reduce((a,b)=>a+Number(b.average),0) /
+        list.length;
+    }
+
+    document.getElementById("avgScore").innerText =
+    avg.toFixed(2);
+
+    let unique =
+    [...new Set(list.map(x=>x.product))];
+
+    document.getElementById("products").innerText =
+    unique.length;
+}
+
+/* RENDER */
+function render(){
+
+    const listEl =
+    document.getElementById("list");
+
+    const filtered = getFiltered();
+
+    updateKPI(filtered);
+
+    if(!filtered.length){
+
+        listEl.innerHTML =
+        `<div class="empty">
+            No records found
+        </div>`;
+
+        drawChart([]);
+        return;
+    }
+
+    let html = "";
+
+    filtered.reverse().forEach(item=>{
+
+        let percent =
+        getPercent(item.average);
+
+        html += `
+
+        <div class="record"
+        onclick="view('${item.id}')">
+
+            <div class="top">
+
+                <div>
+                    <div class="product">
+                        ${item.product}
+                    </div>
+
+                    <div class="panelist">
+                        👤 ${item.panelist}
+                    </div>
+                </div>
+
+                <div class="score">
+                    ${percent}%
+                </div>
+
+            </div>
+
+            <div class="meta">
+                <span>⭐ Avg: ${item.average}</span>
+                <span>${new Date().toLocaleDateString()}</span>
+            </div>
+
+        </div>
+
+        `;
+    });
+
+    listEl.innerHTML = html;
+
+    drawChart(filtered);
+}
+
+/* VIEW */
+function view(id){
+
+    const item =
+    data.find(x=>x.id===id);
+
+    if(!item) return;
+
+    let percent =
+    getPercent(item.average);
+
+    document.getElementById("modalContent").innerHTML = `
+
+        <h2>🍰 ${item.product}</h2>
+
+        <div class="detail">
+            <span>Panelist</span>
+            <b>${item.panelist}</b>
+        </div>
+
+        <div class="detail">
+            <span>Color</span>
+            <b>${item.color}</b>
+        </div>
+
+        <div class="detail">
+            <span>Aroma</span>
+            <b>${item.aroma}</b>
+        </div>
+
+        <div class="detail">
+            <span>Texture</span>
+            <b>${item.texture}</b>
+        </div>
+
+        <div class="detail">
+            <span>Taste</span>
+            <b>${item.taste}</b>
+        </div>
+
+        <div class="detail">
+            <span>Overall</span>
+            <b>${item.overall}</b>
+        </div>
+
+        <div class="detail">
+            <span>Average</span>
+            <b>${item.average}</b>
+        </div>
+
+        <div class="detail">
+            <span>Score</span>
+            <b>${percent}%</b>
+        </div>
+
+        <div class="detail">
+            <span>Remarks</span>
+            <b>${item.remarks || "-"}</b>
+        </div>
+
+        <div class="modal-buttons">
+            <button class="btn export"
+            onclick="closeModal()">
+            Close
+            </button>
+        </div>
+
+    `;
+
+    document.getElementById("modal").style.display =
+    "flex";
+}
+
+/* CLOSE */
+function closeModal(){
+    document.getElementById("modal").style.display =
+    "none";
+}
+
+/* CHART */
+function drawChart(list = data){
+
+    let grouped = {};
+
+    list.forEach(x=>{
+
+        if(!grouped[x.product])
+        grouped[x.product] = [];
+
+        grouped[x.product]
+        .push(Number(x.average));
+    });
+
+    let labels = [];
+    let values = [];
+
+    for(let p in grouped){
+
+        let avg =
+        grouped[p].reduce((a,b)=>a+b,0) /
+        grouped[p].length;
+
+        labels.push(p);
+        values.push(avg.toFixed(2));
+    }
+
+    if(chart) chart.destroy();
+
+    chart = new Chart(
+    document.getElementById("chart"),{
+
+        type:"bar",
+
+        data:{
+            labels:labels,
+
+            datasets:[{
+                label:"Average Score",
+                data:values,
+                backgroundColor:"#22c55e",
+                borderRadius:8
+            }]
+        },
+
+        options:{
+            responsive:true,
+
+            plugins:{
+                legend:{
+                    labels:{
+                        color:"#fff"
+                    }
+                }
+            },
+
+            scales:{
+
+                x:{
+                    ticks:{
+                        color:"#cbd5e1"
+                    }
+                },
+
+                y:{
+                    beginAtZero:true,
+                    max:5,
+
+                    ticks:{
+                        color:"#cbd5e1"
+                    }
+                }
+            }
+        }
+    });
+}
+
+/* EXPORT */
+function exportCSV(){
+
+    let csv =
+    "Product,Panelist,Average,Percent\n";
+
+    data.forEach(x=>{
+
+        csv +=
+        `${x.product},${x.panelist},${x.average},${getPercent(x.average)}%\n`;
+    });
+
+    let blob = new Blob([csv]);
+
+    let url =
+    URL.createObjectURL(blob);
+
+    let a =
+    document.createElement("a");
+
+    a.href = url;
+    a.download = "sensory_dashboard.csv";
+    a.click();
+}
+
+/* CLEAR */
+function clearData(){
+
+    document.getElementById("pwModal")
+    .style.display = "flex";
+}
+
+/* CONFIRM */
+function confirmClear(){
+
+    let pass =
+    document.getElementById("adminPass").value;
+
+    if(pass !== ADMIN_PASSWORD){
+
+        alert("Wrong Password");
+        return;
+    }
+
+    localStorage.removeItem("evaluations_db");
+
+    data = [];
+
+    render();
+
+    closePwModal();
+
+    alert("Data Cleared");
+}
+
+/* CLOSE */
+function closePwModal(){
+
+    document.getElementById("pwModal")
+    .style.display = "none";
+
+    document.getElementById("adminPass").value = "";
+}
+
+/* BACK */
+function goBack(){
+    window.location.href = "adminmain.html";
+}
+
+/* INIT */
+load();
+
+</script>
+
+</body>
+</html>

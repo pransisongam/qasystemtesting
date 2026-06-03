@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Production Reject System</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+:root{
+    --bg1:#071426;
+    --bg2:#0f1f38;
+    --card:#ffffff;
+    --primary:#14b8a6;
+    --primary-dark:#0f766e;
+    --accent:#22c55e;
+    --text:#0f172a;
+    --muted:#64748b;
+    --border:#e2e8f0;
+    --shadow:0 20px 50px rgba(0,0,0,0.18);
+}
+
+body{
+    background:
+    radial-gradient(circle at top left, rgba(20,184,166,0.25), transparent 25%),
+    radial-gradient(circle at bottom right, rgba(34,197,94,0.2), transparent 30%),
+    linear-gradient(135deg,var(--bg1),var(--bg2));
+    min-height:100vh;
+    padding:30px 15px 50px;
+    color:white;
+}
+
+.container{
+    max-width:1200px;
+    margin:auto;
+}
+
+/* HEADER */
+
+.header{
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(14px);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:28px;
+    padding:35px;
+    margin-bottom:25px;
+    position:relative;
+    overflow:hidden;
+}
+
+.header::before{
+    content:'';
+    position:absolute;
+    width:250px;
+    height:250px;
+    background:rgba(255,255,255,0.08);
+    border-radius:50%;
+    top:-120px;
+    right:-100px;
+}
+
+.header-content{
+    position:relative;
+    z-index:2;
+}
+
+.badge{
+    display:inline-block;
+    background:rgba(255,255,255,0.15);
+    padding:10px 18px;
+    border-radius:50px;
+    font-size:13px;
+    margin-bottom:18px;
+    letter-spacing:1px;
+}
+
+.header h1{
+    font-size:42px;
+    font-weight:700;
+    margin-bottom:12px;
+}
+
+.header p{
+    color:#dbeafe;
+    max-width:700px;
+    line-height:1.7;
+}
+
+/* CARD */
+
+.card{
+    background:rgba(255,255,255,0.96);
+    border-radius:28px;
+    padding:30px;
+    box-shadow:var(--shadow);
+    color:var(--text);
+}
+
+.title{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:15px;
+    margin-bottom:30px;
+}
+
+.title h2{
+    color:var(--primary-dark);
+    font-size:28px;
+}
+
+/* FORM */
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:22px;
+}
+
+.field{
+    display:flex;
+    flex-direction:column;
+}
+
+.field.full{
+    grid-column:1/-1;
+}
+
+.field label{
+    margin-bottom:10px;
+    font-weight:600;
+    color:#334155;
+    font-size:14px;
+}
+
+.field input,
+.field select{
+    padding:15px;
+    border-radius:16px;
+    border:1px solid var(--border);
+    background:#f8fafc;
+    font-size:15px;
+    color:#0f172a;
+    outline:none;
+    transition:0.25s ease;
+}
+
+.field input:focus,
+.field select:focus{
+    border-color:var(--primary);
+    background:white;
+    box-shadow:0 0 0 4px rgba(20,184,166,0.15);
+}
+
+#batchNo{
+    background:#ecfeff;
+    color:var(--primary-dark);
+    font-weight:700;
+}
+
+/* PHOTO */
+
+.upload-box{
+    border:2px dashed #cbd5e1;
+    border-radius:22px;
+    padding:25px;
+    text-align:center;
+    background:#f8fafc;
+    transition:0.25s ease;
+}
+
+.upload-box:hover{
+    border-color:var(--primary);
+    background:#ecfeff;
+}
+
+.upload-box p{
+    margin-top:12px;
+    color:var(--muted);
+    font-size:13px;
+}
+
+.previewContainer{
+    display:flex;
+    flex-wrap:wrap;
+    gap:15px;
+    margin-top:20px;
+}
+
+.preview{
+    width:160px;
+    height:120px;
+    object-fit:cover;
+    border-radius:18px;
+    border:3px solid white;
+    box-shadow:0 10px 25px rgba(0,0,0,0.12);
+}
+
+/* BUTTON */
+
+button{
+    border:none;
+    padding:16px 26px;
+    border-radius:18px;
+    cursor:pointer;
+    font-size:15px;
+    font-weight:700;
+    transition:0.25s ease;
+    letter-spacing:0.3px;
+    width:100%;
+    margin-top:30px;
+    background:linear-gradient(135deg,var(--primary),var(--accent));
+    color:white;
+    box-shadow:0 10px 25px rgba(20,184,166,0.35);
+}
+
+button:hover{
+    transform:translateY(-3px);
+}
+
+/* MESSAGE */
+
+.success,
+.error{
+    margin-top:20px;
+    padding:15px;
+    border-radius:16px;
+    text-align:center;
+    font-weight:700;
+}
+
+.success{
+    background:#dcfce7;
+    color:#166534;
+    border:1px solid #86efac;
+}
+
+.error{
+    background:#fee2e2;
+    color:#991b1b;
+    border:1px solid #fca5a5;
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+.header h1{
+    font-size:32px;
+}
+
+.card{
+    padding:22px;
+}
+
+.preview{
+    width:100%;
+    height:200px;
+}
+
+.title{
+    flex-direction:column;
+    align-items:flex-start;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- HEADER -->
+
+<div class="header">
+
+<div class="header-content">
+
+<div class="badge">
+QA MONITORING SYSTEM
+</div>
+
+<h1>🏭 Production Reject System</h1>
+
+<p>
+Modern digital monitoring system for production reject reports,
+quality assurance tracking, and reject documentation.
+</p>
+
+</div>
+</div>
+
+<!-- FORM CARD -->
+
+<div class="card">
+
+<div class="title">
+<h2>📋 Reject Entry Form</h2>
+<div class="badge">LIVE ENTRY</div>
+</div>
+
+<div class="form-grid">
+
+<div class="field">
+<label>Batch No.</label>
+<input id="batchNo" readonly>
+</div>
+
+<div class="field">
+<label>Date</label>
+<input id="date" type="date">
+</div>
+
+<div class="field">
+<label>Location</label>
+<select id="location">
+<option>Warehouse</option>
+<option>Baseline</option>
+<option>Bakery</option>
+<option>Cakeline Shift A</option>
+<option>Cakeline Shift B</option>
+<option>Cakeline Shift C</option>
+<option>Cakeline Shift D</option>
+<option>Cakeline Shift E</option>
+<option>Packaging</option>
+<option>Dry Compounding</option>
+<option>Wet Compounding</option>
+<option>Prep Line (hot)</option>
+<option>Prep Line (cold)</option>
+<option>Dispatching</option>
+<option>Comfort Snack</option>
+</select>
+</div>
+
+<div class="field">
+<label>QA</label>
+<input id="qa" type="text" placeholder="Enter QA name">
+</div>
+
+<div class="field">
+<label>Process Owner</label>
+<input id="processOwner" type="text" placeholder="Enter process owner">
+</div>
+
+<div class="field">
+<label>Category</label>
+<select id="category">
+<option>Raw Materials</option>
+<option>Work in Process</option>
+<option>Semifinished Goods</option>
+<option>Finished Goods</option>
+</select>
+</div>
+
+<div class="field">
+<label>Product</label>
+<input id="product" type="text" placeholder="Enter product name">
+</div>
+
+<div class="field">
+<label>Quantity</label>
+<input id="qty" type="number" placeholder="Enter quantity">
+</div>
+
+<div class="field">
+<label>UOM</label>
+<select id="uom">
+<option>Kilograms (kg)</option>
+<option>grams (g)</option>
+<option>Liters (L)</option>
+<option>gallons (gal)</option>
+<option>Pack (pk)</option>
+<option>Pieces (pcs)</option>
+<option>Box (bx)</option>
+<option>Bucket (bkt)</option>
+</select>
+</div>
+
+<!-- REASON SELECTION -->
+
+<div class="field">
+<label>Reason</label>
+
+<select id="reason">
+
+<option value="">Select Reject Reason</option>
+
+<!-- QUALITY -->
+<option>Wrong Taste</option>
+<option>Bad Odor</option>
+<option>Color Defect</option>
+<option>Texture Problem</option>
+<option>Underweight</option>
+<option>Overweight</option>
+<option>Expired Product</option>
+
+<!-- PACKAGING -->
+<option>Damaged Packaging</option>
+<option>Wrong Label</option>
+<option>No Expiry Date</option>
+<option>Seal Problem</option>
+<option>Broken Container</option>
+
+<!-- MACHINE -->
+<option>Machine Breakdown</option>
+<option>Machine Calibration Error</option>
+<option>Equipment Failure</option>
+
+<!-- HUMAN ERROR -->
+<option>Operator Mistake</option>
+<option>Wrong Mixing</option>
+<option>Wrong Measurement</option>
+<option>Improper Handling</option>
+
+<!-- RAW MATERIAL -->
+<option>Contaminated Raw Material</option>
+<option>Expired Raw Material</option>
+<option>Low Quality Material</option>
+
+<!-- PROCESS -->
+<option>Temperature Deviation</option>
+<option>Cooking Error</option>
+<option>Improper Processing</option>
+
+<!-- OTHERS -->
+<option>Foreign Material</option>
+<option>Damaged During Transport</option>
+<option>Others</option>
+
+</select>
+</div>
+</div>
+
+<div class="field full">
+<label>Root Cause</label>
+<input id="rootCause" type="text" placeholder="Enter root cause">
+</div>
+
+<div class="field">
+<label>Remarks</label>
+<select id="remarks">
+<option>Disposal</option>
+<option>Internal Sale</option>
+</select>
+</div>
+
+<div class="field full">
+
+<label>Upload Photos</label>
+
+<div class="upload-box">
+
+<input
+id="photo"
+type="file"
+accept="image/*"
+capture="environment"
+multiple
+onchange="loadPhoto(event)">
+
+<p>Maximum of 3 photos allowed</p>
+
+</div>
+
+<div
+class="previewContainer"
+id="previewContainer">
+</div>
+
+</div>
+
+</div>
+
+<button onclick="save()">
+📤 Submit Reject Report
+</button>
+
+<p id="msg"></p>
+
+</div>
+
+</div>
+
+<script>
+
+const $ = id => document.getElementById(id);
+
+let photoData = [];
+
+/* =========================
+   GET LOGGED IN USER
+========================= */
+
+const loggedUser =
+localStorage.getItem("fullname") ||
+localStorage.getItem("username") ||
+"Unknown QA";
+
+const loggedRole =
+localStorage.getItem("role") ||
+"QA Personnel";
+
+/* =========================
+   AUTO SET QA NAME
+========================= */
+
+window.onload = () => {
+
+    $("qa").value = loggedUser;
+
+    $("qa").readOnly = true;
+
+    $("qa").style.background = "#ecfeff";
+
+    $("qa").style.fontWeight = "700";
+
+};
+
+/* =========================
+   PHOTO PREVIEW
+========================= */
+
+function loadPhoto(event){
+
+    const files = event.target.files;
+
+    if(!files) return;
+
+    if(files.length > 3){
+
+        $("msg").innerText =
+        "❌ Maximum 3 photos only";
+
+        $("msg").className = "error";
+
+        event.target.value = "";
+
+        return;
+    }
+
+    photoData = [];
+
+    $("previewContainer").innerHTML = "";
+
+    Array.from(files).forEach(file=>{
+
+        const reader = new FileReader();
+
+        reader.onload = e=>{
+
+            photoData.push(e.target.result);
+
+            const img =
+            document.createElement("img");
+
+            img.src = e.target.result;
+
+            img.className = "preview";
+
+            $("previewContainer")
+            .appendChild(img);
+
+        };
+
+        reader.readAsDataURL(file);
+
+    });
+
+}
+
+/* =========================
+   PREFIX
+========================= */
+
+function getPrefix(){
+
+    const loc = $("location").value;
+
+    if(loc.includes("Warehouse")) return "W";
+    if(loc.includes("Baseline")) return "BL";
+    if(loc.includes("Bakery")) return "BK";
+    if(loc.includes("Cakeline Shift A")) return "CSA";
+    if(loc.includes("Cakeline Shift B")) return "CSB";
+    if(loc.includes("Cakeline Shift C")) return "CSC";
+    if(loc.includes("Cakeline Shift D")) return "CSD";
+    if(loc.includes("Cakeline Shift E")) return "CSE";
+    if(loc.includes("Packaging")) return "P";
+    if(loc.includes("Dry Compounding")) return "DC";
+    if(loc.includes("Wet Compounding")) return "WC";
+    if(loc.includes("Prep Line (hot)")) return "PLH";
+    if(loc.includes("Prep Line (cold)")) return "PLC";
+    if(loc.includes("Dispatching")) return "D";
+    if(loc.includes("Comfort Snack")) return "CS";
+
+    return "X";
+
+}
+
+/* =========================
+   BATCH NUMBER
+========================= */
+
+function generateBatch(){
+
+    let counter =
+    parseInt(
+        localStorage.getItem(
+            "batchCounter"
+        ) || "1"
+    );
+
+    let d = new Date();
+
+    let dp =
+    String(d.getFullYear()).slice(-2)+
+    String(d.getMonth()+1).padStart(2,'0')+
+    String(d.getDate()).padStart(2,'0');
+
+    $("batchNo").value =
+    `${getPrefix()}-${dp}-${String(counter).padStart(3,'0')}`;
+
+}
+
+/* =========================
+   DATE
+========================= */
+
+function today(){
+
+    $("date").value =
+    new Date().toISOString().split("T")[0];
+
+}
+
+$("location").addEventListener(
+    "change",
+    generateBatch
+);
+
+today();
+
+generateBatch();
+
+/* =========================
+   SAVE REPORT
+========================= */
+
+function save(){
+
+    const data = {
+
+        id:Date.now(),
+
+        reportNo:
+        "RR-" +
+        Math.floor(
+            100000 + Math.random()*900000
+        ),
+
+        batchNo:$("batchNo").value,
+
+        date:$("date").value,
+
+        location:$("location").value,
+
+        /* AUTO QA USER */
+        qa:loggedUser,
+
+        role:loggedRole,
+
+        processOwner:
+        $("processOwner").value,
+
+        category:
+        $("category").value,
+
+        product:
+        $("product").value,
+
+        qty:
+        $("qty").value,
+
+        uom:
+        $("uom").value,
+
+        reason:
+        $("reason").value,
+
+        rootCause:
+        $("rootCause").value,
+
+        remarks:
+        $("remarks").value,
+
+        status:"Pending",
+
+        submittedBy:
+        loggedUser,
+
+        createdAt:
+        new Date().toLocaleString(),
+
+        photo:photoData
+
+    };
+
+    /* VALIDATION */
+
+    if(
+        !data.product ||
+        !data.reason ||
+        !data.rootCause ||
+        !data.qty ||
+        !data.processOwner
+    ){
+
+        $("msg").innerText =
+        "❌ Please complete all required fields";
+
+        $("msg").className = "error";
+
+        return;
+    }
+
+    /* MAIN STORAGE */
+
+    let arr =
+    JSON.parse(
+        localStorage.getItem("rejects")
+        || "[]"
+    );
+
+    arr.push(data);
+
+    localStorage.setItem(
+        "rejects",
+        JSON.stringify(arr)
+    );
+
+    /* ADMIN STORAGE */
+
+    let admin =
+    JSON.parse(
+        localStorage.getItem(
+            "admin_rejects"
+        ) || "[]"
+    );
+
+    admin.push(data);
+
+    localStorage.setItem(
+        "admin_rejects",
+        JSON.stringify(admin)
+    );
+
+    /* COUNTER */
+
+    let counter =
+    parseInt(
+        localStorage.getItem(
+            "batchCounter"
+        ) || "1"
+    );
+
+    localStorage.setItem(
+        "batchCounter",
+        counter + 1
+    );
+
+    /* SUCCESS */
+
+    $("msg").innerText =
+    "✅ Reject report submitted successfully by " +
+    loggedUser;
+
+    $("msg").className = "success";
+
+    console.log(
+        "Submitted by:",
+        loggedUser
+    );
+
+    /* RESET */
+
+    $("qty").value = "";
+
+    $("photo").value = "";
+
+    $("product").value = "";
+
+    $("reason").value = "";
+
+    $("rootCause").value = "";
+
+    $("processOwner").value = "";
+
+    $("previewContainer").innerHTML = "";
+
+    photoData = [];
+
+    today();
+
+    generateBatch();
+
+}
+
+</script>
+
+</body>
+</html>

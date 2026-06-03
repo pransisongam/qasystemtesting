@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Line Inspection System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+
+:root{
+    --bg:#020617;
+    --panel:rgba(15,23,42,0.88);
+    --panel2:rgba(30,41,59,0.78);
+
+    --border:rgba(255,255,255,0.08);
+
+    --green:#22c55e;
+    --green2:#16a34a;
+
+    --blue:#3b82f6;
+    --red:#ef4444;
+    --orange:#f59e0b;
+
+    --text:#f8fafc;
+    --muted:#94a3b8;
+
+    --shadow:0 20px 50px rgba(0,0,0,0.45);
+}
+
+*{
+    box-sizing:border-box;
+    font-family:Segoe UI, Arial, sans-serif;
+}
+
+body{
+    margin:0;
+    background:
+    radial-gradient(circle at top left, rgba(34,197,94,0.14), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(59,130,246,0.12), transparent 35%),
+    linear-gradient(135deg,#020617,#071226,#0f172a);
+
+    color:var(--text);
+    min-height:100vh;
+}
+
+/* HEADER */
+.header{
+    position:sticky;
+    top:0;
+    z-index:100;
+
+    padding:20px 30px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    background:rgba(2,6,23,0.75);
+    backdrop-filter:blur(18px);
+
+    border-bottom:1px solid var(--border);
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.logo-icon{
+    width:58px;
+    height:58px;
+    border-radius:18px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:28px;
+
+    background:linear-gradient(135deg,var(--green),var(--blue));
+
+    box-shadow:0 10px 30px rgba(34,197,94,0.3);
+}
+
+.logo-text h1{
+    margin:0;
+    font-size:22px;
+    letter-spacing:1px;
+}
+
+.logo-text small{
+    color:var(--muted);
+}
+
+/* CONTAINER */
+.container{
+    max-width:1350px;
+    margin:auto;
+    padding:28px;
+}
+
+/* HERO */
+.hero{
+    background:var(--panel);
+    border:1px solid var(--border);
+
+    border-radius:28px;
+
+    padding:30px;
+
+    box-shadow:var(--shadow);
+
+    backdrop-filter:blur(16px);
+
+    position:relative;
+    overflow:hidden;
+
+    margin-bottom:24px;
+}
+
+.hero::before{
+    content:"";
+    position:absolute;
+
+    width:300px;
+    height:300px;
+
+    background:rgba(34,197,94,0.08);
+
+    border-radius:50%;
+
+    top:-120px;
+    right:-120px;
+}
+
+.hero h2{
+    margin:0;
+    font-size:34px;
+}
+
+.hero p{
+    color:var(--muted);
+    margin-top:10px;
+    line-height:1.7;
+}
+
+/* KPI */
+.kpis{
+    margin-top:24px;
+
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:16px;
+}
+
+.kpi{
+    background:rgba(255,255,255,0.04);
+    border:1px solid var(--border);
+
+    border-radius:22px;
+
+    padding:20px;
+}
+
+.kpi h1{
+    margin:0;
+    font-size:34px;
+}
+
+.kpi small{
+    color:var(--muted);
+}
+
+/* TOOLBAR */
+.toolbar{
+    display:grid;
+    grid-template-columns:1fr auto auto;
+    gap:14px;
+    margin-bottom:20px;
+}
+
+.search-box input,
+.filter-box select{
+    width:100%;
+}
+
+/* PANEL */
+.panel{
+    background:var(--panel);
+    border:1px solid var(--border);
+
+    border-radius:24px;
+
+    padding:22px;
+
+    backdrop-filter:blur(16px);
+
+    box-shadow:var(--shadow);
+}
+
+/* INPUTS */
+input,select{
+    width:100%;
+
+    padding:14px;
+
+    border:none;
+
+    border-radius:16px;
+
+    background:rgba(255,255,255,0.06);
+
+    color:var(--text);
+
+    outline:none;
+
+    border:1px solid rgba(255,255,255,0.08);
+
+    font-size:14px;
+}
+
+input::placeholder{
+    color:#94a3b8;
+}
+
+select option{
+    background:#0f172a;
+}
+
+/* BUTTONS */
+.btn{
+    padding:14px 18px;
+
+    border:none;
+
+    border-radius:16px;
+
+    color:#fff;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:0.25s;
+}
+
+.btn:hover{
+    transform:translateY(-2px);
+}
+
+.export{
+    background:linear-gradient(135deg,var(--blue),#2563eb);
+}
+
+.clear{
+    background:linear-gradient(135deg,var(--red),#dc2626);
+}
+
+/* RECORDS */
+.records{
+    margin-top:10px;
+}
+
+.card{
+    background:rgba(255,255,255,0.04);
+
+    border:1px solid rgba(255,255,255,0.06);
+
+    border-radius:24px;
+
+    padding:20px;
+
+    margin-bottom:18px;
+
+    transition:0.3s;
+
+    cursor:pointer;
+
+    overflow:hidden;
+}
+
+.card:hover{
+    transform:translateY(-4px);
+
+    border-color:rgba(34,197,94,0.25);
+
+    box-shadow:0 18px 40px rgba(0,0,0,0.35);
+}
+
+.card-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:15px;
+}
+
+.card h3{
+    margin:0;
+    font-size:20px;
+}
+
+.meta{
+    margin-top:8px;
+    color:var(--muted);
+    line-height:1.7;
+    font-size:14px;
+}
+
+/* STATUS */
+.badge{
+    padding:8px 14px;
+
+    border-radius:999px;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    display:inline-block;
+}
+
+.pass{
+    background:rgba(34,197,94,0.18);
+    color:#86efac;
+    border:1px solid rgba(34,197,94,0.3);
+}
+
+.fail{
+    background:rgba(239,68,68,0.18);
+    color:#fca5a5;
+    border:1px solid rgba(239,68,68,0.3);
+}
+
+/* DETAILS */
+.detail{
+    display:none;
+
+    margin-top:18px;
+
+    padding-top:18px;
+
+    border-top:1px solid rgba(255,255,255,0.08);
+}
+
+.detail-title{
+    margin-bottom:12px;
+    font-weight:700;
+}
+
+.check-item{
+    display:flex;
+    justify-content:space-between;
+
+    padding:12px 14px;
+
+    margin-bottom:10px;
+
+    border-radius:14px;
+
+    background:rgba(255,255,255,0.04);
+}
+
+.check-item.pass{
+    border:1px solid rgba(34,197,94,0.25);
+}
+
+.check-item.fail{
+    border:1px solid rgba(239,68,68,0.25);
+}
+
+/* POPUP */
+#popup{
+    position:fixed;
+    inset:0;
+
+    background:rgba(0,0,0,0.65);
+
+    display:none;
+    align-items:center;
+    justify-content:center;
+
+    z-index:999;
+}
+
+.popup-box{
+    width:90%;
+    max-width:380px;
+
+    background:#0f172a;
+
+    border:1px solid rgba(255,255,255,0.08);
+
+    border-radius:24px;
+
+    padding:24px;
+
+    box-shadow:var(--shadow);
+}
+
+.popup-box h3{
+    margin-top:0;
+}
+
+.popup-actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:12px;
+}
+
+.empty{
+    text-align:center;
+    padding:40px;
+    color:var(--muted);
+}
+
+/* MOBILE */
+@media(max-width:900px){
+
+    .toolbar{
+        grid-template-columns:1fr;
+    }
+
+    .card-top{
+        flex-direction:column;
+    }
+
+    .hero h2{
+        font-size:26px;
+    }
+
+    .container{
+        padding:16px;
+    }
+
+    .header{
+        padding:16px;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+
+    <div class="logo">
+
+        <div class="logo-icon">🛠</div>
+
+        <div class="logo-text">
+            <h1>LINE INSPECTION SYSTEM</h1>
+            <small>Monitoring Dashboard</small>
+        </div>
+
+    </div>
+
+</div>
+
+<div class="container">
+
+    <!-- HERO -->
+    <div class="hero">
+
+        <h2>Inspection Command Center</h2>
+
+        <p>
+            Real-time monitoring for production inspections,
+            compliance validation, checklist tracking,
+            and inspection analytics.
+        </p>
+
+        <div class="kpis">
+
+            <div class="kpi">
+                <h1 id="totalCount">0</h1>
+                <small>Total Inspections</small>
+            </div>
+
+            <div class="kpi">
+                <h1 id="passCount">0</h1>
+                <small>PASS Records</small>
+            </div>
+
+            <div class="kpi">
+                <h1 id="failCount">0</h1>
+                <small>FAIL Records</small>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- PANEL -->
+    <div class="panel">
+
+        <div class="toolbar">
+
+            <div class="search-box">
+                <input id="search"
+                onkeyup="load()"
+                placeholder="🔍 Search area / inspector / stage / date">
+            </div>
+
+            <div class="filter-box">
+                <select id="lineFilter" onchange="load()">
+                    <option value="">📁 All Lines</option>
+                    <option value="Bakery">Bakery</option>
+                    <option value="Baseline">Baseline</option>
+                    <option value="Packaging">Packaging</option>
+                </select>
+            </div>
+
+            <div style="display:flex;gap:10px;">
+                <button class="btn export" onclick="exportData()">
+                    📤 Export
+                </button>
+
+                <button class="btn clear" onclick="openPopup()">
+                    🧹 Clear
+                </button>
+            </div>
+
+        </div>
+
+        <div id="records" class="records"></div>
+
+    </div>
+
+</div>
+
+<!-- POPUP -->
+<div id="popup">
+
+    <div class="popup-box">
+
+        <h3>🔐 Admin Verification</h3>
+
+        <input type="password" id="pass"
+        placeholder="Enter admin password">
+
+        <div class="popup-actions">
+
+            <button class="btn clear"
+            onclick="confirmClear()">
+                Confirm
+            </button>
+
+            <button class="btn export"
+            onclick="closePopup()">
+                Cancel
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+function getData(){
+    return JSON.parse(localStorage.getItem("admin_inspections")) || [];
+}
+
+function toggleDetail(id){
+
+    let el = document.getElementById("detail-"+id);
+
+    el.style.display =
+    el.style.display === "block"
+    ? "none"
+    : "block";
+}
+
+function load(){
+
+    let data = getData();
+
+    let search =
+    document.getElementById("search")
+    .value.toLowerCase();
+
+    let line =
+    document.getElementById("lineFilter").value;
+
+    let filtered = data.filter(r=>{
+
+        if(line && r.line !== line) return false;
+
+        return (
+            r.area +
+            r.date +
+            r.stage +
+            r.inspector +
+            r.status
+        ).toLowerCase().includes(search);
+
+    });
+
+    filtered = filtered
+    .reverse()
+    .filter(r =>
+        (r.status || "").toUpperCase() !== "N/A"
+    );
+
+    /* KPI */
+    let pass = 0;
+    let fail = 0;
+
+    filtered.forEach(r=>{
+
+        if((r.status||"").toUpperCase()==="PASS")
+            pass++;
+
+        if((r.status||"").toUpperCase()==="FAIL")
+            fail++;
+
+    });
+
+    document.getElementById("totalCount").innerText =
+    filtered.length;
+
+    document.getElementById("passCount").innerText =
+    pass;
+
+    document.getElementById("failCount").innerText =
+    fail;
+
+    /* RECORDS */
+    let html = "";
+
+    filtered.forEach(r=>{
+
+        let status =
+        (r.status || "").toUpperCase();
+
+        let statusClass =
+        status === "PASS"
+        ? "pass"
+        : "fail";
+
+        html += `
+
+        <div class="card"
+        onclick="toggleDetail('${r.id}')">
+
+            <div class="card-top">
+
+                <div>
+
+                    <h3>${r.area}</h3>
+
+                    <div class="meta">
+                        📅 ${r.date}<br>
+                        🏭 ${r.stage}<br>
+                        👨‍🔬 Inspector: ${r.inspector}<br>
+                        📁 Line: ${r.line || "N/A"}
+                    </div>
+
+                </div>
+
+                <div class="badge ${statusClass}">
+                    ${status}
+                </div>
+
+            </div>
+
+            <div class="detail"
+            id="detail-${r.id}">
+
+                <div class="detail-title">
+                    ✅ Checklist Details
+                </div>
+
+                ${(r.checklist||[]).map(c=>`
+
+                    <div class="check-item
+                    ${c.result === 'FAIL'
+                    ? 'fail'
+                    : 'pass'}">
+
+                        <span>${c.item}</span>
+
+                        <b>${c.result}</b>
+
+                    </div>
+
+                `).join("")}
+
+            </div>
+
+        </div>
+
+        `;
+    });
+
+    document.getElementById("records").innerHTML =
+    html || `
+    <div class="empty">
+        No inspection records found
+    </div>`;
+}
+
+function exportData(){
+
+    let data = getData();
+
+    let csv =
+    "Area,Date,Stage,Inspector,Line,Status\n";
+
+    data.forEach(r=>{
+
+        let status =
+        (r.status || "").toUpperCase();
+
+        if(status === "N/A") return;
+
+        csv +=
+        `${r.area},${r.date},${r.stage},${r.inspector},${r.line},${status}\n`;
+
+    });
+
+    let blob =
+    new Blob([csv],{type:"text/csv"});
+
+    let a =
+    document.createElement("a");
+
+    a.href = URL.createObjectURL(blob);
+
+    a.download = "inspection-report.csv";
+
+    a.click();
+}
+
+function openPopup(){
+    document.getElementById("popup")
+    .style.display = "flex";
+}
+
+function closePopup(){
+    document.getElementById("popup")
+    .style.display = "none";
+}
+
+function confirmClear(){
+
+    let pass =
+    document.getElementById("pass").value;
+
+    if(pass === "1234"){
+
+        localStorage.removeItem("admin_inspections");
+
+        load();
+
+        closePopup();
+
+        alert("✅ Data cleared successfully");
+
+    }else{
+
+        alert("❌ Wrong password");
+
+    }
+}
+
+window.onload = load;
+
+</script>
+
+</body>
+</html>
